@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: earningslens
+
+  # Database connection. Each value is read from an environment variable,
+  # and the part after ":" is the default used for the local Docker database.
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/earningslens}
+    username: ${DB_USER:earningslens}
+    password: ${DB_PASSWORD:earningslens}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate   # Flyway owns the schema; Hibernate only checks it matches.
+    open-in-view: false
+
+  ai:
+    openai:
+      # Real key comes from the OPENAI_API_KEY environment variable (never committed).
+      # The placeholder only lets the app start before a key is set.
+      api-key: ${OPENAI_API_KEY:not-set}

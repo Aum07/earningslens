@@ -1,0 +1,23 @@
+# Local development database: PostgreSQL 16 with the pgvector extension.
+# Start:  docker compose up -d      Stop: docker compose down
+# Values come from the .env file next to this one, with local-only defaults.
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: earningslens-db
+    environment:
+      POSTGRES_DB: ${DB_NAME:-earningslens}
+      POSTGRES_USER: ${DB_USER:-earningslens}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-earningslens}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-earningslens} -d ${DB_NAME:-earningslens}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:
