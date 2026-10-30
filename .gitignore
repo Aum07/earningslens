@@ -1,0 +1,32 @@
+# Secrets
+.env
+*.env.local
+
+# Raw downloaded filings (large, re-downloadable)
+corpus/raw/*
+!corpus/raw/.gitkeep
+
+# Java / Maven
+target/
+*.class
+*.log
+hs_err_pid*
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+coverage/
+
+# IDE and OS
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Private planning and AI assistant files (kept local only)
+CLAUDE.md
+PROJECT_SPEC.md
+ROADMAP.md
+.claude/
