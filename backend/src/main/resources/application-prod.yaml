@@ -1,0 +1,24 @@
+# Profile "prod": Azure deployment.
+# No defaults for secrets here: if a variable is missing, the app fails to start
+# instead of silently using a local value. Azure supplies these as env vars (no .env file).
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+
+earningslens:
+  sec:
+    user-agent: ${SEC_USER_AGENT}
+
+server:
+  error:
+    include-stacktrace: never
+    include-message: never
+
+logging:
+  level:
+    root: INFO

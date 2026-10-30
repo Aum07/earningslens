@@ -1,9 +1,19 @@
+# Default profile: local development.
+# Values like ${DB_URL:...} are read from environment variables or the .env file;
+# the part after ":" is the default for the local Docker database.
+
 spring:
   application:
     name: earningslens
 
-  # Database connection. Each value is read from an environment variable,
-  # and the part after ":" is the default used for the local Docker database.
+  # Load secrets from the .env file in the project root (gitignored).
+  # "optional:" means the app still starts if the file is missing.
+  # Two paths because the working folder is either backend/ or the project root.
+  config:
+    import:
+      - optional:file:../.env[.properties]
+      - optional:file:./.env[.properties]
+
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/earningslens}
     username: ${DB_USER:earningslens}
@@ -16,6 +26,34 @@ spring:
 
   ai:
     openai:
-      # Real key comes from the OPENAI_API_KEY environment variable (never committed).
+      # Real key comes from OPENAI_API_KEY (never committed).
       # The placeholder only lets the app start before a key is set.
       api-key: ${OPENAI_API_KEY:not-set}
+
+earningslens:
+  llm:
+    chat-model: gpt-4o-mini
+    embedding-model: text-embedding-3-small
+    embedding-dimensions: 1536
+    temperature: 0.0
+    max-output-tokens: 700
+  retrieval:
+    k: 8
+    k-per-period: 3
+    max-periods: 4
+    vector-candidates: 30
+    keyword-candidates: 30
+    rrf-k: 60
+    min-similarity: 0.0   # placeholder, tuned on the dev split in E3.7
+  rate-limit:
+    requests-per-minute-per-ip: 10
+    daily-chat-cap: 300
+  sec:
+    user-agent: ${SEC_USER_AGENT:EarningsLens dev contact@example.com}
+    min-delay-millis: 250   # 4 requests per second, well under the SEC limit of 10
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

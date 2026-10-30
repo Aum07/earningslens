@@ -1,0 +1,5 @@
+# Profile "ingest": run from the command line to download and index documents.
+# No web server; the app runs the ingestion job and exits.
+spring:
+  main:
+    web-application-type: none

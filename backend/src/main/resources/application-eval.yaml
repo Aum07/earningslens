@@ -1,0 +1,5 @@
+# Profile "eval": run from the command line to execute the evaluation harness.
+# No web server; the app runs the eval job, writes reports and exits.
+spring:
+  main:
+    web-application-type: none
