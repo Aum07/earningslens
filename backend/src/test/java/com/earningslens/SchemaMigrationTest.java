@@ -10,7 +10,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Checks that Flyway applied V1__init.sql: tables, extension and indexes exist.
+ * Checks that Flyway applied the migrations: tables, extension, indexes and V2's column exist.
  * Needs the local Docker database running (docker compose up -d).
  */
 @SpringBootTest
@@ -49,5 +49,13 @@ class SchemaMigrationTest {
         Boolean success = jdbc.queryForObject(
                 "SELECT success FROM flyway_schema_history WHERE version = '1'", Boolean.class);
         assertThat(success).isTrue();
+    }
+
+    @Test
+    void v2AddsTheForwardLookingColumn() {
+        String type = jdbc.queryForObject(
+                "SELECT data_type FROM information_schema.columns "
+                        + "WHERE table_name = 'chunks' AND column_name = 'forward_looking'", String.class);
+        assertThat(type).isEqualTo("boolean");
     }
 }

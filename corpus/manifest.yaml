@@ -1,2 +1,300 @@
-# Corpus manifest, filled in task E1.1
-documents: []
+# Corpus manifest (task E1.1). The only list of documents to ingest.
+# 3 companies x 4 consecutive fiscal quarters x (press release, 10-Q/10-K, transcript) = 36 documents.
+#
+# Fiscal calendars:
+#   MSFT  fiscal year ends June 30. FY2026 Q2 = Oct-Dec 2025 ... FY2027 Q1 = Jul-Sep 2026.
+#   GOOGL fiscal year = calendar year.
+#   META  fiscal year = calendar year.
+# Q4 rows use the 10-K (FORM_10K) instead of a 10-Q.
+#
+# Fiscal year and quarter were checked against each document's own period line
+# ("quarter ended ...", "For the Quarterly Period Ended ...", "Fiscal Year Ended ...").
+#
+# Not included on purpose: MSFT 8-K 0001193125-26-380280 (Sep 2026 recast of FY26 segment
+# history for the FY27 reporting changes). It is not a quarterly earnings release.
+
+documents:
+
+  # ---------------- MSFT: Microsoft Corporation (CIK 0000789019) ----------------
+
+  # FY2026 Q2: quarter ended 2025-12-31, released 2026-01-28
+  - ticker: MSFT
+    company_name: Microsoft Corporation
+    fiscal_year: 2026
+    fiscal_quarter: 2
+    doc_type: PRESS_RELEASE
+    url: https://www.sec.gov/Archives/edgar/data/789019/000119312526027198/msft-ex99_1.htm
+    format: HTML
+  - ticker: MSFT
+    company_name: Microsoft Corporation
+    fiscal_year: 2026
+    fiscal_quarter: 2
+    doc_type: FORM_10Q
+    url: https://www.sec.gov/Archives/edgar/data/789019/000119312526027207/msft-20251231.htm
+    format: HTML
+  - ticker: MSFT
+    company_name: Microsoft Corporation
+    fiscal_year: 2026
+    fiscal_quarter: 2
+    doc_type: TRANSCRIPT
+    url: https://www.microsoft.com/en-us/investor/events/fy-2026/earnings-fy-2026-q2
+    format: HTML
+
+  # FY2026 Q3: quarter ended 2026-03-31, released 2026-04-29
+  - ticker: MSFT
+    company_name: Microsoft Corporation
+    fiscal_year: 2026
+    fiscal_quarter: 3
+    doc_type: PRESS_RELEASE
+    url: https://www.sec.gov/Archives/edgar/data/789019/000119312526191457/msft-ex99_1.htm
+    format: HTML
+  - ticker: MSFT
+    company_name: Microsoft Corporation
+    fiscal_year: 2026
+    fiscal_quarter: 3
+    doc_type: FORM_10Q
+    url: https://www.sec.gov/Archives/edgar/data/789019/000119312526191507/msft-20260331.htm
+    format: HTML
+  - ticker: MSFT
+    company_name: Microsoft Corporation
+    fiscal_year: 2026
+    fiscal_quarter: 3
+    doc_type: TRANSCRIPT
+    url: https://www.microsoft.com/en-us/investor/events/fy-2026/earnings-fy-2026-q3
+    format: HTML
+
+  # FY2026 Q4: quarter and fiscal year ended 2026-06-30, released 2026-07-29
+  - ticker: MSFT
+    company_name: Microsoft Corporation
+    fiscal_year: 2026
+    fiscal_quarter: 4
+    doc_type: PRESS_RELEASE
+    url: https://www.sec.gov/Archives/edgar/data/789019/000119312526323632/msft-ex99_1.htm
+    format: HTML
+  - ticker: MSFT
+    company_name: Microsoft Corporation
+    fiscal_year: 2026
+    fiscal_quarter: 4
+    doc_type: FORM_10K
+    url: https://www.sec.gov/Archives/edgar/data/789019/000119312526323660/msft-20260630.htm
+    format: HTML
+  - ticker: MSFT
+    company_name: Microsoft Corporation
+    fiscal_year: 2026
+    fiscal_quarter: 4
+    doc_type: TRANSCRIPT
+    url: https://www.microsoft.com/en-us/investor/events/fy-2026/earnings-fy-2026-q4
+    format: HTML
+
+  # FY2027 Q1: quarter ended 2026-09-30, released 2026-10-28
+  - ticker: MSFT
+    company_name: Microsoft Corporation
+    fiscal_year: 2027
+    fiscal_quarter: 1
+    doc_type: PRESS_RELEASE
+    url: https://www.sec.gov/Archives/edgar/data/789019/000119312526436122/msft-ex99_1.htm
+    format: HTML
+  - ticker: MSFT
+    company_name: Microsoft Corporation
+    fiscal_year: 2027
+    fiscal_quarter: 1
+    doc_type: FORM_10Q
+    url: https://www.sec.gov/Archives/edgar/data/789019/000119312526436133/msft-20260930.htm
+    format: HTML
+  - ticker: MSFT
+    company_name: Microsoft Corporation
+    fiscal_year: 2027
+    fiscal_quarter: 1
+    doc_type: TRANSCRIPT
+    url: https://www.microsoft.com/en-us/investor/events/fy-2027/earnings-fy-2027-q1
+    format: HTML
+
+  # ---------------- GOOGL: Alphabet Inc. (CIK 0001652044)
+  # Transcripts: the IR event page carries the full transcript as HTML; a PDF copy is linked from each page. ----------------
+
+  # FY2025 Q4: quarter and year ended 2025-12-31, released 2026-02-04
+  - ticker: GOOGL
+    company_name: Alphabet Inc.
+    fiscal_year: 2025
+    fiscal_quarter: 4
+    doc_type: PRESS_RELEASE
+    url: https://www.sec.gov/Archives/edgar/data/1652044/000165204426000012/googexhibit991q42025.htm
+    format: HTML
+  - ticker: GOOGL
+    company_name: Alphabet Inc.
+    fiscal_year: 2025
+    fiscal_quarter: 4
+    doc_type: FORM_10K
+    url: https://www.sec.gov/Archives/edgar/data/1652044/000165204426000018/goog-20251231.htm
+    format: HTML
+  - ticker: GOOGL
+    company_name: Alphabet Inc.
+    fiscal_year: 2025
+    fiscal_quarter: 4
+    doc_type: TRANSCRIPT
+    url: https://abc.xyz/investor/events/event-details/2026/2025-Q4-Earnings-Call-2026-Dr_C033hS6/default.aspx
+    format: HTML
+
+  # FY2026 Q1: quarter ended 2026-03-31, released 2026-04-29
+  - ticker: GOOGL
+    company_name: Alphabet Inc.
+    fiscal_year: 2026
+    fiscal_quarter: 1
+    doc_type: PRESS_RELEASE
+    url: https://www.sec.gov/Archives/edgar/data/1652044/000165204426000043/googexhibit991q12026.htm
+    format: HTML
+  - ticker: GOOGL
+    company_name: Alphabet Inc.
+    fiscal_year: 2026
+    fiscal_quarter: 1
+    doc_type: FORM_10Q
+    url: https://www.sec.gov/Archives/edgar/data/1652044/000165204426000048/goog-20260331.htm
+    format: HTML
+  - ticker: GOOGL
+    company_name: Alphabet Inc.
+    fiscal_year: 2026
+    fiscal_quarter: 1
+    doc_type: TRANSCRIPT
+    url: https://abc.xyz/investor/events/event-details/2026/2026-Q1-Earnings-Call-2026-nW8kCrBAKS/default.aspx
+    format: HTML
+
+  # FY2026 Q2: quarter ended 2026-06-30, released 2026-07-22
+  - ticker: GOOGL
+    company_name: Alphabet Inc.
+    fiscal_year: 2026
+    fiscal_quarter: 2
+    doc_type: PRESS_RELEASE
+    url: https://www.sec.gov/Archives/edgar/data/1652044/000165204426000066/googexhibit991q22026.htm
+    format: HTML
+  - ticker: GOOGL
+    company_name: Alphabet Inc.
+    fiscal_year: 2026
+    fiscal_quarter: 2
+    doc_type: FORM_10Q
+    url: https://www.sec.gov/Archives/edgar/data/1652044/000165204426000071/goog-20260630.htm
+    format: HTML
+  - ticker: GOOGL
+    company_name: Alphabet Inc.
+    fiscal_year: 2026
+    fiscal_quarter: 2
+    doc_type: TRANSCRIPT
+    url: https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx
+    format: HTML
+
+  # FY2026 Q3: quarter ended 2026-09-30, released 2026-10-28
+  - ticker: GOOGL
+    company_name: Alphabet Inc.
+    fiscal_year: 2026
+    fiscal_quarter: 3
+    doc_type: PRESS_RELEASE
+    url: https://www.sec.gov/Archives/edgar/data/1652044/000165204426000080/googexhibit991q32026.htm
+    format: HTML
+  - ticker: GOOGL
+    company_name: Alphabet Inc.
+    fiscal_year: 2026
+    fiscal_quarter: 3
+    doc_type: FORM_10Q
+    url: https://www.sec.gov/Archives/edgar/data/1652044/000165204426000084/goog-20260930.htm
+    format: HTML
+  - ticker: GOOGL
+    company_name: Alphabet Inc.
+    fiscal_year: 2026
+    fiscal_quarter: 3
+    doc_type: TRANSCRIPT
+    url: https://abc.xyz/investor/events/event-details/2026/2026-Q3-Earnings-Call-2026-Ujou16CTw9/default.aspx
+    format: HTML
+
+  # ---------------- META: Meta Platforms, Inc. (CIK 0001326801)
+  # Transcripts are the main call only (Meta also posts a separate follow-up call transcript). ----------------
+
+  # FY2025 Q4: quarter and year ended 2025-12-31, released 2026-01-28
+  - ticker: META
+    company_name: Meta Platforms, Inc.
+    fiscal_year: 2025
+    fiscal_quarter: 4
+    doc_type: PRESS_RELEASE
+    url: https://www.sec.gov/Archives/edgar/data/1326801/000162828026003832/meta-12312025xexhibit991.htm
+    format: HTML
+  - ticker: META
+    company_name: Meta Platforms, Inc.
+    fiscal_year: 2025
+    fiscal_quarter: 4
+    doc_type: FORM_10K
+    url: https://www.sec.gov/Archives/edgar/data/1326801/000162828026003942/meta-20251231.htm
+    format: HTML
+  - ticker: META
+    company_name: Meta Platforms, Inc.
+    fiscal_year: 2025
+    fiscal_quarter: 4
+    doc_type: TRANSCRIPT
+    url: https://s21.q4cdn.com/399680738/files/doc_financials/2025/q4/META-Q4-2025-Earnings-Call-Transcript.pdf
+    format: PDF
+
+  # FY2026 Q1: quarter ended 2026-03-31, released 2026-04-29
+  - ticker: META
+    company_name: Meta Platforms, Inc.
+    fiscal_year: 2026
+    fiscal_quarter: 1
+    doc_type: PRESS_RELEASE
+    url: https://www.sec.gov/Archives/edgar/data/1326801/000162828026028364/meta-03312026xexhibit991.htm
+    format: HTML
+  - ticker: META
+    company_name: Meta Platforms, Inc.
+    fiscal_year: 2026
+    fiscal_quarter: 1
+    doc_type: FORM_10Q
+    url: https://www.sec.gov/Archives/edgar/data/1326801/000162828026028526/meta-20260331.htm
+    format: HTML
+  - ticker: META
+    company_name: Meta Platforms, Inc.
+    fiscal_year: 2026
+    fiscal_quarter: 1
+    doc_type: TRANSCRIPT
+    url: https://s21.q4cdn.com/399680738/files/doc_financials/2026/q1/META-Q1-2026-Earnings-Call-Transcript.pdf
+    format: PDF
+
+  # FY2026 Q2: quarter ended 2026-06-30, released 2026-07-29
+  - ticker: META
+    company_name: Meta Platforms, Inc.
+    fiscal_year: 2026
+    fiscal_quarter: 2
+    doc_type: PRESS_RELEASE
+    url: https://www.sec.gov/Archives/edgar/data/1326801/000162828026050596/meta-06302026xexhibit991.htm
+    format: HTML
+  - ticker: META
+    company_name: Meta Platforms, Inc.
+    fiscal_year: 2026
+    fiscal_quarter: 2
+    doc_type: FORM_10Q
+    url: https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm
+    format: HTML
+  - ticker: META
+    company_name: Meta Platforms, Inc.
+    fiscal_year: 2026
+    fiscal_quarter: 2
+    doc_type: TRANSCRIPT
+    url: https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf
+    format: PDF
+
+  # FY2026 Q3: quarter ended 2026-09-30, released 2026-10-21
+  - ticker: META
+    company_name: Meta Platforms, Inc.
+    fiscal_year: 2026
+    fiscal_quarter: 3
+    doc_type: PRESS_RELEASE
+    url: https://www.sec.gov/Archives/edgar/data/1326801/000162828026066700/meta-09302026xexhibit991.htm
+    format: HTML
+  - ticker: META
+    company_name: Meta Platforms, Inc.
+    fiscal_year: 2026
+    fiscal_quarter: 3
+    doc_type: FORM_10Q
+    url: https://www.sec.gov/Archives/edgar/data/1326801/000162828026066773/meta-20260930.htm
+    format: HTML
+  - ticker: META
+    company_name: Meta Platforms, Inc.
+    fiscal_year: 2026
+    fiscal_quarter: 3
+    doc_type: TRANSCRIPT
+    url: https://s21.q4cdn.com/399680738/files/content_files/META-Q3-2026-Earnings-Call-Transcript.pdf
+    format: PDF

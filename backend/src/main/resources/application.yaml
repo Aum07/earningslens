@@ -29,6 +29,9 @@ spring:
       # Real key comes from OPENAI_API_KEY (never committed).
       # The placeholder only lets the app start before a key is set.
       api-key: ${OPENAI_API_KEY:not-set}
+      # Our EmbeddingService does its own backoff (E1.7), so the client must not retry too,
+      # otherwise one failure could turn into 3 x 5 requests.
+      max-retries: 0
 
 earningslens:
   llm:
@@ -51,6 +54,20 @@ earningslens:
   sec:
     user-agent: ${SEC_USER_AGENT:EarningsLens dev contact@example.com}
     min-delay-millis: 250   # 4 requests per second, well under the SEC limit of 10
+  ingest:
+    # Paths are relative to the working folder, which is backend/ when you run
+    # ./mvnw spring-boot:run or the tests.
+    manifest-path: ../corpus/manifest.yaml
+    raw-dir: ../corpus/raw
+  chunking:
+    target-tokens: 600   # spec 7.2 step 4
+    overlap-tokens: 100
+    max-tokens: 900
+  embedding:
+    batch-size: 64              # spec 7.2 step 5
+    max-retries: 5
+    initial-backoff-millis: 1000  # 1s, 2s, 4s, 8s, 16s
+    max-backoff-millis: 30000
 
 management:
   endpoints:
