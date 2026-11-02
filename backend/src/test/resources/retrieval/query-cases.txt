@@ -1,0 +1,78 @@
+# QueryParser + PeriodResolver cases (roadmap E3.4). One case per line:
+#   question | tickers | targets | missing
+# "-" means none. Targets and missing are "TICKER FYyyyy Qn", comma-separated, sorted by ticker then period.
+# Corpus used by the test (same as the real one):
+#   GOOGL, META: FY2025 Q4, FY2026 Q1-Q3      MSFT: FY2026 Q2-Q4, FY2027 Q1 (fiscal year ends June)
+# Questions marked (dev qNNN) are from the dev split. Never add test-split questions (q035-q084) here.
+
+# Explicit fiscal labels
+What was Microsoft's total revenue in Q2 FY2026? (dev q001) | MSFT | MSFT FY2026 Q2 | -
+What was Microsoft Cloud revenue in the first quarter of fiscal 2027? (dev q002) | MSFT | MSFT FY2027 Q1 | -
+How many rides was Waymo doing according to Alphabet's Q1 2026 results? (dev q004) | GOOGL | GOOGL FY2026 Q1 | -
+How did Satya Nadella describe Copilot on the Q1 FY2027 call? (dev q020) | - | MSFT FY2027 Q1 | -
+Microsoft FY27 Q1 operating income | MSFT | MSFT FY2027 Q1 | -
+Microsoft operating margin Q1FY27 | MSFT | MSFT FY2027 Q1 | -
+Microsoft's fiscal year 2026 third quarter results | MSFT | MSFT FY2026 Q3 | -
+Meta's third quarter of 2026 revenue | META | META FY2026 Q3 | -
+
+# Bare years are topics, not periods
+Why did Meta raise its 2026 capex outlook in Q1 2026? (dev q024) | META | META FY2026 Q1 | -
+What did Alphabet say about CapEx for 2027 on its Q1 2026 call? (dev q025) | GOOGL | GOOGL FY2026 Q1 | -
+What is Alphabet's full-year 2026 capex guidance? | GOOGL | - | -
+
+# Calendar months and calendar quarters (converted per company)
+How many daily active people did Meta report on average in December 2025? (dev q007) | META | META FY2025 Q4 | -
+How many employees were affected by Meta's May 2026 headcount reduction? (dev q009) | META | META FY2026 Q2 | -
+What was Microsoft's revenue in the month of March 2026? (dev q032) | MSFT | MSFT FY2026 Q3 | -
+Microsoft revenue for calendar Q3 2026 | MSFT | MSFT FY2027 Q1 | -
+Compare Microsoft and Alphabet for the quarter ended September 30, 2026 | GOOGL, MSFT | GOOGL FY2026 Q3, MSFT FY2027 Q1 | -
+
+# Ranges and lists
+How did Alphabet's full-year 2026 CapEx guidance evolve from the Q4 2025 call to the Q3 2026 call? (dev q013) | GOOGL | GOOGL FY2025 Q4, GOOGL FY2026 Q1, GOOGL FY2026 Q2, GOOGL FY2026 Q3 | -
+How did Azure growth change from Q2 to Q4 of Microsoft's fiscal 2026? (dev q014) | MSFT | MSFT FY2026 Q2, MSFT FY2026 Q3, MSFT FY2026 Q4 | -
+How did Google Cloud revenue develop from Q4 2025 to Q3 2026? (dev q015) | GOOGL | GOOGL FY2025 Q4, GOOGL FY2026 Q1, GOOGL FY2026 Q2, GOOGL FY2026 Q3 | -
+Meta revenue between Q1 2026 and Q3 2026 | META | META FY2026 Q1, META FY2026 Q2, META FY2026 Q3 | -
+Compare Alphabet's Q1 and Q3 2026 | GOOGL | GOOGL FY2026 Q1, GOOGL FY2026 Q3 | -
+Compare Alphabet's Q1 2026 and Q3 2026 | GOOGL | GOOGL FY2026 Q1, GOOGL FY2026 Q3 | -
+What was Meta's revenue in each of the first three quarters of 2026? (dev q016) | META | META FY2026 Q1, META FY2026 Q2, META FY2026 Q3 | -
+How much did Meta spend on capital expenditures in each quarter of 2026 so far? (dev q018) | META | META FY2026 Q1, META FY2026 Q2, META FY2026 Q3 | -
+
+Meta revenue in the first half of 2026 | META | META FY2026 Q1, META FY2026 Q2 | -
+Microsoft H2 FY26 cloud margin | MSFT | MSFT FY2026 Q3, MSFT FY2026 Q4 | -
+Google's 2Q26 revenue | GOOGL | GOOGL FY2026 Q2 | -
+How has Alphabet's capex guidance changed since Q4 2025? | GOOGL | GOOGL FY2025 Q4, GOOGL FY2026 Q1, GOOGL FY2026 Q2, GOOGL FY2026 Q3 | -
+Microsoft Azure growth from Q4 FY2026 onwards | MSFT | MSFT FY2026 Q4, MSFT FY2027 Q1 | -
+What did Alphabet say about CapEx guidance from the Q4 2025 call? | GOOGL | GOOGL FY2025 Q4 | -
+
+# Relative periods, resolved against the corpus per company
+How did Meta's capital expenditure outlook change over the last four quarters? (dev q012) | META | META FY2025 Q4, META FY2026 Q1, META FY2026 Q2, META FY2026 Q3 | -
+What was Microsoft's total revenue over the last three quarters? (dev q017) | MSFT | MSFT FY2026 Q3, MSFT FY2026 Q4, MSFT FY2027 Q1 | -
+What did Microsoft's CFO say about capital expenditures on the last three earnings calls? (dev q019) | MSFT | MSFT FY2026 Q3, MSFT FY2026 Q4, MSFT FY2027 Q1 | -
+Microsoft revenue over the past 10 quarters | MSFT | MSFT FY2026 Q2, MSFT FY2026 Q3, MSFT FY2026 Q4, MSFT FY2027 Q1 | -
+What was Nvidia's data center revenue in its latest quarter? (dev q034) | - | GOOGL FY2026 Q3, META FY2026 Q3, MSFT FY2027 Q1 | -
+What did Meta say on its most recent earnings call? | META | META FY2026 Q3 | -
+GOOG and MSFT results for the most recent quarter | GOOGL, MSFT | GOOGL FY2026 Q3, MSFT FY2027 Q1 | -
+Alphabet Q3 revenue | GOOGL | GOOGL FY2026 Q3 | -
+What did Microsoft report in its third quarter? | MSFT | MSFT FY2026 Q3 | -
+
+# Previous quarter and year over year
+Alphabet revenue in Q1 2026 compared with the previous quarter | GOOGL | GOOGL FY2025 Q4, GOOGL FY2026 Q1 | -
+How did Microsoft revenue change quarter over quarter? | MSFT | MSFT FY2026 Q4, MSFT FY2027 Q1 | -
+Meta revenue growth year over year in Q3 2026 | META | META FY2026 Q3 | -
+
+# No company named: only pairs that exist in the corpus
+How many monthly active users did the Gemini App have in Q2 2026? (dev q005) | - | GOOGL FY2026 Q2, META FY2026 Q2, MSFT FY2026 Q2 | -
+Revenue in Q1 FY2027 | - | MSFT FY2027 Q1 | -
+
+# Periods not in the corpus
+What was Microsoft's revenue in Q1 FY2025? (dev q026) | MSFT | - | MSFT FY2025 Q1
+What was Alphabet's total revenue in Q4 2026? (dev q030) | GOOGL | - | GOOGL FY2026 Q4
+Microsoft revenue in Q1 2026 | MSFT | - | MSFT FY2026 Q1
+Revenue in Q1 FY2025 | - | - | GOOGL FY2025 Q1, META FY2025 Q1, MSFT FY2025 Q1
+Microsoft revenue from Q1 to Q3 FY2026 | MSFT | MSFT FY2026 Q2, MSFT FY2026 Q3 | MSFT FY2026 Q1
+
+# No match
+What is Satya Nadella's annual base salary? (dev q033) | - | - | -
+What did Meta say about launching a stablecoin in 2026? (dev q028) | META | - | -
+How does the parser handle metadata and googled words? | - | - | -
+What did Facebook say about Instagram? | META | - | -

@@ -13,4 +13,5 @@ Do not upgrade mid-project. Use only the documentation for these versions.
 | Jsoup | 1.23.2 |
 | Apache PDFBox | 3.0.8 |
 | jtokkit | 1.1.0 |
+| Testcontainers | 2.0.5 (managed by Spring Boot, test scope only) |
 | Angular | to be filled in E6.1 |

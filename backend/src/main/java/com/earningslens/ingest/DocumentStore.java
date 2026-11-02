@@ -79,8 +79,8 @@ public class DocumentStore {
         return documentId;
     }
 
-    /** pgvector reads vectors written as text: "[0.1,0.2,...]". */
-    static String toVectorLiteral(float[] vector) {
+    /** pgvector reads vectors written as text: "[0.1,0.2,...]". Also used by retrieval for query vectors. */
+    public static String toVectorLiteral(float[] vector) {
         StringBuilder text = new StringBuilder(vector.length * 12).append('[');
         for (int i = 0; i < vector.length; i++) {
             if (i > 0) {
