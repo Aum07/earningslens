@@ -64,3 +64,23 @@ Format: date, decision, reason, alternative considered.
 - **Decision:** a chunk under a heading gets a "Section: <heading>" line after the "[TICKER | FYyyyy Qn | DOC_TYPE]" header (cut to 200 characters). `TextCleaner` now also removes short repeated tables (page-top tables such as "Table of Contents | Alphabet Inc.") and the cover-page label "(Mark One)".
 - **Reason:** the E1.9 sanity check found chunks whose whole body was "None." or "Not applicable." (answers to 10-Q items like "Defaults Upon Senior Securities"). Without the heading these say nothing; with it they answer real questions ("any legal proceedings?") and the embedding knows the topic. It also helps every other chunk: the heading names the topic of the text below it. The same check found Alphabet's per-page header table stored as duplicate chunks.
 - **Alternative considered:** deleting tiny chunks (loses real answers) or merging them into the next section (wrong section metadata). Cost of the change: one re-embed of the corpus, about 2 US cents.
+
+## 2026-11-01: Eval dataset format and loader (E2.1)
+- **Decision:** `EvalDatasetLoader` reads `eval/dataset.jsonl` one line at a time with Jackson 3 (`tools.jackson`, already in the app through Spring Boot 4, so no new dependency) into a plain Map, then checks it by hand and builds `EvalItem` records. Rules: unknown fields are rejected (catches typos such as `gold_evidnce`); `answerable` must be false only for `unanswerable`; answerable items need at least one quote, unanswerable items none; `multi_quarter` items need evidence from at least 2 periods (period coverage depends on it); quotes are at least 15 characters; question 3 to 500 characters (same as the chat API); ids look like `q001` and are unique. Errors name the file, line, item id and field.
+- **`filters` shape:** same as the chat API request in spec 10 (`tickers`, `fiscalPeriods: [{year, quarter}]`, `docTypes`), so an item can be sent to the API unchanged. `null` or missing means no explicit filters.
+- **Reason:** clear errors while writing 80 items by hand; letting Jackson bind records directly gives vaguer messages.
+- **Alternative considered:** Jackson record binding with `@JsonProperty` (less code, worse error messages), or Jackson 2 (`com.fasterxml`, only present because Spring AI pulls it in).
+
+## 2026-11-01: Dev split has 34 items, 9 of them unanswerable (E2.2)
+- **Decision:** 4 extra unanswerable dev items (q031-q034), so dev has 9 unanswerable instead of 5. The test split will have 5 unanswerable instead of 9, so the whole dataset is 84 items with 14 unanswerable (spec 11.1 asks for at least 80 and 15).
+- **Reason:** E3.7 tunes the evidence threshold on the dev unanswerables only; with 5 items one odd question can move the threshold. The unanswerable kinds differ: period not in corpus, company not in corpus, topic never discussed, figure not disclosed, period after the corpus, guidance that is never given, monthly figure (only quarterly reported), executive pay (not in these documents).
+- **Alternative considered:** keeping the spec proportions exactly (5 dev / 10 test), which gives a less stable threshold.
+
+## 2026-11-01: Gold answers may only state numbers their quotes contain
+- **Decision:** `EvalGoldAnswerNumbersTest` fails if a gold answer contains a number that is not in that item's quotes (years, Qn and FYnnnn labels ignored). Runs in CI because it needs no database.
+- **Reason:** a wrong number in a gold answer makes the correctness score unfair without anyone noticing. On the first run it found two answers that stated more than their quotes showed (q002 constant-currency growth, q011 period end date); both quotes were extended to the full source sentence.
+
+## 2026-11-01: Test split has 50 items (E2.3)
+- **Decision:** q035-q084, 21 single_fact, 13 multi_quarter, 11 qualitative, 5 unanswerable. Whole dataset: 84 items, 32 / 21 / 17 / 14 (spec 11.1 asks for at least 80 with 30 / 20 / 15 / 15). Test items use different facts and quotes from dev, and cover all four document types, including two facts that only appear in 10-K filings.
+- **Reason:** keeps the spec proportions within one or two items per category after moving 4 unanswerable items to dev (see the entry above).
+- **Rule:** test questions are not run against the system until the final evaluation; nothing is tuned on them.
