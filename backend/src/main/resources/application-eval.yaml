@@ -3,3 +3,17 @@
 spring:
   main:
     web-application-type: none
+
+# Eval job settings (EvalProperties). Usually given on the command line, for example:
+#   --eval.config=A,B,C --eval.split=dev --eval.confirm=true
+# Without --eval.confirm=true the job only prints the cost estimate and sends nothing to OpenAI.
+eval:
+  task: retrieval            # only "retrieval" exists so far (E3.6); refused on the test split
+  config: A,B,C
+  split: dev
+  confirm: false
+  label: ""                  # optional report-name suffix while tuning, for example k10
+  sweep: ""                  # optional, for example 8x3,12x4,16x5: one report per k x k-per-period setting
+  dataset-path: ../eval/dataset.jsonl
+  reports-dir: ../eval/reports
+  embedding-price-per-million-tokens: 0.02   # text-embedding-3-small, OpenAI list price (checked 2026-11-02)

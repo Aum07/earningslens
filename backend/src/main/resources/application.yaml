@@ -41,13 +41,14 @@ earningslens:
     temperature: 0.0
     max-output-tokens: 700
   retrieval:
-    k: 8
-    k-per-period: 3
+    k: 16                 # tuned on dev in E3.6 (spec default 8); see DECISIONS.md "k sweep on dev"
+    k-per-period: 5       # tuned on dev in E3.6 (spec default 3); up to 4 x 5 = 20 chunks per question
     max-periods: 4
     vector-candidates: 30
     keyword-candidates: 30
     rrf-k: 60
-    min-similarity: 0.0   # placeholder, tuned on the dev split in E3.7
+    min-similarity: 0.531 # chosen on dev in E3.7: blocks no answerable dev question (DECISIONS.md)
+    mode: D               # ablation config for the API (spec 11.4): C + the min-similarity abstention
   rate-limit:
     requests-per-minute-per-ip: 10
     daily-chat-cap: 300

@@ -28,9 +28,11 @@ class ConfigPropertiesTest {
 
     @Test
     void retrievalSettingsMatchSpec() {
-        assertThat(retrieval.k()).isEqualTo(8);
-        assertThat(retrieval.kPerPeriod()).isEqualTo(3);
+        // Spec defaults were 8 and 3; 16 and 5 were chosen on the dev split in E3.6 (DECISIONS.md).
+        assertThat(retrieval.k()).isEqualTo(16);
+        assertThat(retrieval.kPerPeriod()).isEqualTo(5);
         assertThat(retrieval.rrfK()).isEqualTo(60);
+        assertThat(retrieval.minSimilarity()).isEqualTo(0.531);   // chosen on dev in E3.7
     }
 
     @Test

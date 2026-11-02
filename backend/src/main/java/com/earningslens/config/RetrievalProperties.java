@@ -1,7 +1,9 @@
 package com.earningslens.config;
 
 import jakarta.validation.constraints.DecimalMax;
+import com.earningslens.retrieval.RetrievalMode;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
@@ -10,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
  * Retrieval settings from spec section 8, read from "earningslens.retrieval".
  *
  * minSimilarity is tuned later on the dev split only (task E3.7).
+ * mode is the default ablation config (spec 11.4) used by the API; eval runs pass their own.
  */
 @Validated
 @ConfigurationProperties(prefix = "earningslens.retrieval")
@@ -20,6 +23,7 @@ public record RetrievalProperties(
         @Positive int vectorCandidates,     // top N from vector search before fusion
         @Positive int keywordCandidates,    // top N from full-text search before fusion
         @Positive int rrfK,                 // the constant 60 in 1 / (60 + rank)
-        @DecimalMin("0.0") @DecimalMax("1.0") double minSimilarity
+        @DecimalMin("0.0") @DecimalMax("1.0") double minSimilarity,
+        @NotNull RetrievalMode mode         // A, B, C or D (spec 11.4)
 ) {
 }
