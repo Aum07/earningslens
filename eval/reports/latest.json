@@ -1,0 +1,376 @@
+{
+  "date" : "2026-11-04",
+  "split" : "test",
+  "reports" : [ "2026-11-04-A-test.json", "2026-11-04-B-test.json", "2026-11-04-C-test.json", "2026-11-04-D-test.json" ],
+  "ablationReport" : "2026-11-04-ablation-test.md",
+  "settings" : {
+    "k" : 16,
+    "kPerPeriod" : 5,
+    "maxPeriods" : 4,
+    "minSimilarity" : 0.531,
+    "chunkTargetTokens" : 600,
+    "chunkOverlapTokens" : 100,
+    "corpusChunks" : 3285,
+    "chatModel" : "gpt-4o-mini",
+    "embeddingModel" : "text-embedding-3-small",
+    "judgeModel" : "gpt-4.1",
+    "rubricPromptSha256" : "68dde8982907efc297ced81059c2d00b6b89d2565b9f840cbdfd5fd0a8ed301e"
+  },
+  "configs" : [ {
+    "config" : "A",
+    "items" : 50,
+    "errors" : 1,
+    "retrieval" : {
+      "answerableItems" : 44,
+      "recallAll" : 0.4772727272727273,
+      "recallAny" : 0.5909090909090909,
+      "mrr" : 0.25959908147408145,
+      "requiredPeriods" : 43,
+      "coveredPeriods" : 43,
+      "periodCoverage" : 1.0,
+      "avgRetrieved" : 16.0
+    },
+    "retrievalByCategory" : {
+      "single_fact" : {
+        "answerableItems" : 21,
+        "recallAll" : 0.6666666666666666,
+        "recallAny" : 0.6666666666666666,
+        "mrr" : 0.324033374033374,
+        "requiredPeriods" : 0,
+        "coveredPeriods" : 0,
+        "periodCoverage" : null,
+        "avgRetrieved" : 16.0
+      },
+      "multi_quarter" : {
+        "answerableItems" : 12,
+        "recallAll" : 0.16666666666666666,
+        "recallAny" : 0.5,
+        "mrr" : 0.20658068783068784,
+        "requiredPeriods" : 43,
+        "coveredPeriods" : 43,
+        "periodCoverage" : 1.0,
+        "avgRetrieved" : 16.0
+      },
+      "qualitative" : {
+        "answerableItems" : 11,
+        "recallAll" : 0.45454545454545453,
+        "recallAny" : 0.5454545454545454,
+        "mrr" : 0.19442640692640695,
+        "requiredPeriods" : 0,
+        "coveredPeriods" : 0,
+        "periodCoverage" : null,
+        "avgRetrieved" : 16.0
+      }
+    },
+    "generation" : {
+      "judged" : 44,
+      "faithfulness" : 0.9475378787878787,
+      "fullyFaithful" : 0.8636363636363636,
+      "citationPrecision" : 0.9107142857142857,
+      "citationPairs" : 112,
+      "numberGroundingRate" : 0.9230769230769231,
+      "numbers" : 156,
+      "correctness" : 4.510204081632653,
+      "correctnessAnsweredAnswerable" : 4.454545454545454,
+      "correctnessByCategory" : {
+        "single_fact" : 4.666666666666667,
+        "multi_quarter" : 4.166666666666667,
+        "qualitative" : 4.363636363636363,
+        "unanswerable" : 5.0
+      }
+    },
+    "abstention" : {
+      "unanswerable" : 5,
+      "unanswerableAbstained" : 5,
+      "answerable" : 44,
+      "answerableAbstained" : 0,
+      "precision" : 1.0,
+      "recall" : 1.0,
+      "falseAbstentionRate" : 0.0,
+      "byReason" : {
+        "INSUFFICIENT_EVIDENCE" : 5
+      }
+    },
+    "operations" : {
+      "queries" : 49,
+      "latencyP50Ms" : 2045,
+      "latencyP95Ms" : 5728,
+      "meanCostUsd" : 9.0614E-4,
+      "totalCostUsd" : 0.04440086,
+      "judgeCostUsd" : 0.38107199999999997
+    }
+  }, {
+    "config" : "B",
+    "items" : 50,
+    "errors" : 0,
+    "retrieval" : {
+      "answerableItems" : 45,
+      "recallAll" : 0.5777777777777777,
+      "recallAny" : 0.6666666666666666,
+      "mrr" : 0.30787342287342284,
+      "requiredPeriods" : 46,
+      "coveredPeriods" : 46,
+      "periodCoverage" : 1.0,
+      "avgRetrieved" : 16.0
+    },
+    "retrievalByCategory" : {
+      "single_fact" : {
+        "answerableItems" : 21,
+        "recallAll" : 0.7619047619047619,
+        "recallAny" : 0.7619047619047619,
+        "mrr" : 0.2777937670794814,
+        "requiredPeriods" : 0,
+        "coveredPeriods" : 0,
+        "periodCoverage" : null,
+        "avgRetrieved" : 16.0
+      },
+      "multi_quarter" : {
+        "answerableItems" : 13,
+        "recallAll" : 0.23076923076923078,
+        "recallAny" : 0.5384615384615384,
+        "mrr" : 0.27573260073260075,
+        "requiredPeriods" : 46,
+        "coveredPeriods" : 46,
+        "periodCoverage" : 1.0,
+        "avgRetrieved" : 16.0
+      },
+      "qualitative" : {
+        "answerableItems" : 11,
+        "recallAll" : 0.6363636363636364,
+        "recallAny" : 0.6363636363636364,
+        "mrr" : 0.40328282828282824,
+        "requiredPeriods" : 0,
+        "coveredPeriods" : 0,
+        "periodCoverage" : null,
+        "avgRetrieved" : 16.0
+      }
+    },
+    "generation" : {
+      "judged" : 43,
+      "faithfulness" : 0.9096622369878183,
+      "fullyFaithful" : 0.7906976744186046,
+      "citationPrecision" : 0.8487394957983193,
+      "citationPairs" : 119,
+      "numberGroundingRate" : 0.8850574712643678,
+      "numbers" : 174,
+      "correctness" : 4.2,
+      "correctnessAnsweredAnswerable" : 4.255813953488372,
+      "correctnessByCategory" : {
+        "single_fact" : 4.571428571428571,
+        "multi_quarter" : 3.5384615384615383,
+        "qualitative" : 3.909090909090909,
+        "unanswerable" : 5.0
+      }
+    },
+    "abstention" : {
+      "unanswerable" : 5,
+      "unanswerableAbstained" : 5,
+      "answerable" : 45,
+      "answerableAbstained" : 2,
+      "precision" : 0.7142857142857143,
+      "recall" : 1.0,
+      "falseAbstentionRate" : 0.044444444444444446,
+      "byReason" : {
+        "INSUFFICIENT_EVIDENCE" : 7
+      }
+    },
+    "operations" : {
+      "queries" : 50,
+      "latencyP50Ms" : 2051,
+      "latencyP95Ms" : 5629,
+      "meanCostUsd" : 0.001157553,
+      "totalCostUsd" : 0.057877649999999996,
+      "judgeCostUsd" : 0.375026
+    }
+  }, {
+    "config" : "C",
+    "items" : 50,
+    "errors" : 0,
+    "retrieval" : {
+      "answerableItems" : 45,
+      "recallAll" : 0.7111111111111111,
+      "recallAny" : 0.7777777777777778,
+      "mrr" : 0.38566738816738816,
+      "requiredPeriods" : 46,
+      "coveredPeriods" : 38,
+      "periodCoverage" : 0.8260869565217391,
+      "avgRetrieved" : 16.4
+    },
+    "retrievalByCategory" : {
+      "single_fact" : {
+        "answerableItems" : 21,
+        "recallAll" : 0.9047619047619048,
+        "recallAny" : 0.9047619047619048,
+        "mrr" : 0.41648886827458254,
+        "requiredPeriods" : 0,
+        "coveredPeriods" : 0,
+        "periodCoverage" : null,
+        "avgRetrieved" : 15.952380952380953
+      },
+      "multi_quarter" : {
+        "answerableItems" : 13,
+        "recallAll" : 0.3076923076923077,
+        "recallAny" : 0.5384615384615384,
+        "mrr" : 0.20452047952047953,
+        "requiredPeriods" : 46,
+        "coveredPeriods" : 38,
+        "periodCoverage" : 0.8260869565217391,
+        "avgRetrieved" : 17.46153846153846
+      },
+      "qualitative" : {
+        "answerableItems" : 11,
+        "recallAll" : 0.8181818181818182,
+        "recallAny" : 0.8181818181818182,
+        "mrr" : 0.5409090909090909,
+        "requiredPeriods" : 0,
+        "coveredPeriods" : 0,
+        "periodCoverage" : null,
+        "avgRetrieved" : 16.0
+      }
+    },
+    "generation" : {
+      "judged" : 44,
+      "faithfulness" : 0.9329545454545454,
+      "fullyFaithful" : 0.8409090909090909,
+      "citationPrecision" : 0.8888888888888888,
+      "citationPairs" : 117,
+      "numberGroundingRate" : 0.9568345323741008,
+      "numbers" : 139,
+      "correctness" : 4.44,
+      "correctnessAnsweredAnswerable" : 4.454545454545454,
+      "correctnessByCategory" : {
+        "single_fact" : 4.523809523809524,
+        "multi_quarter" : 3.8461538461538463,
+        "qualitative" : 4.7272727272727275,
+        "unanswerable" : 5.0
+      }
+    },
+    "abstention" : {
+      "unanswerable" : 5,
+      "unanswerableAbstained" : 5,
+      "answerable" : 45,
+      "answerableAbstained" : 1,
+      "precision" : 0.8333333333333334,
+      "recall" : 1.0,
+      "falseAbstentionRate" : 0.022222222222222223,
+      "byReason" : {
+        "INSUFFICIENT_EVIDENCE" : 5,
+        "PERIOD_NOT_IN_CORPUS" : 1
+      }
+    },
+    "operations" : {
+      "queries" : 50,
+      "latencyP50Ms" : 2475,
+      "latencyP95Ms" : 5569,
+      "meanCostUsd" : 0.0011600742,
+      "totalCostUsd" : 0.05800371,
+      "judgeCostUsd" : 0.377402
+    }
+  }, {
+    "config" : "D",
+    "items" : 50,
+    "errors" : 0,
+    "retrieval" : {
+      "answerableItems" : 45,
+      "recallAll" : 0.7111111111111111,
+      "recallAny" : 0.7777777777777778,
+      "mrr" : 0.38566738816738816,
+      "requiredPeriods" : 46,
+      "coveredPeriods" : 38,
+      "periodCoverage" : 0.8260869565217391,
+      "avgRetrieved" : 16.4
+    },
+    "retrievalByCategory" : {
+      "single_fact" : {
+        "answerableItems" : 21,
+        "recallAll" : 0.9047619047619048,
+        "recallAny" : 0.9047619047619048,
+        "mrr" : 0.41648886827458254,
+        "requiredPeriods" : 0,
+        "coveredPeriods" : 0,
+        "periodCoverage" : null,
+        "avgRetrieved" : 15.952380952380953
+      },
+      "multi_quarter" : {
+        "answerableItems" : 13,
+        "recallAll" : 0.3076923076923077,
+        "recallAny" : 0.5384615384615384,
+        "mrr" : 0.20452047952047953,
+        "requiredPeriods" : 46,
+        "coveredPeriods" : 38,
+        "periodCoverage" : 0.8260869565217391,
+        "avgRetrieved" : 17.46153846153846
+      },
+      "qualitative" : {
+        "answerableItems" : 11,
+        "recallAll" : 0.8181818181818182,
+        "recallAny" : 0.8181818181818182,
+        "mrr" : 0.5409090909090909,
+        "requiredPeriods" : 0,
+        "coveredPeriods" : 0,
+        "periodCoverage" : null,
+        "avgRetrieved" : 16.0
+      }
+    },
+    "generation" : {
+      "judged" : 41,
+      "faithfulness" : 0.9402439024390243,
+      "fullyFaithful" : 0.8780487804878049,
+      "citationPrecision" : 0.8454545454545455,
+      "citationPairs" : 110,
+      "numberGroundingRate" : 0.9745762711864406,
+      "numbers" : 118,
+      "correctness" : 4.26,
+      "correctnessAnsweredAnswerable" : 4.487804878048781,
+      "correctnessByCategory" : {
+        "single_fact" : 4.190476190476191,
+        "multi_quarter" : 3.6153846153846154,
+        "qualitative" : 4.818181818181818,
+        "unanswerable" : 5.0
+      }
+    },
+    "abstention" : {
+      "unanswerable" : 5,
+      "unanswerableAbstained" : 5,
+      "answerable" : 45,
+      "answerableAbstained" : 4,
+      "precision" : 0.5555555555555556,
+      "recall" : 1.0,
+      "falseAbstentionRate" : 0.08888888888888889,
+      "byReason" : {
+        "LOW_SIMILARITY" : 3,
+        "INSUFFICIENT_EVIDENCE" : 5,
+        "PERIOD_NOT_IN_CORPUS" : 1
+      }
+    },
+    "operations" : {
+      "queries" : 50,
+      "latencyP50Ms" : 1760,
+      "latencyP95Ms" : 3119,
+      "meanCostUsd" : 0.0010883892,
+      "totalCostUsd" : 0.054419459999999996,
+      "judgeCostUsd" : 0.35673
+    }
+  } ],
+  "judgeAgreement" : {
+    "report" : "2026-11-04-judge-agreement-dev-v2.json",
+    "agreement" : {
+      "n" : 30,
+      "faithfulness" : {
+        "bothYes" : 22,
+        "bothNo" : 5,
+        "humanYesJudgeNo" : 1,
+        "humanNoJudgeYes" : 2,
+        "agreement" : 0.9,
+        "kappa" : 0.7058823529411765
+      },
+      "correctness" : {
+        "exact" : 0.7,
+        "withinOne" : 0.9333333333333333,
+        "meanJudgeMinusHuman" : 0.3333333333333333,
+        "matrix" : [ [ 1, 1, 0, 0, 0 ], [ 0, 0, 2, 0, 1 ], [ 0, 0, 2, 0, 1 ], [ 0, 0, 1, 4, 3 ], [ 0, 0, 0, 0, 14 ] ]
+      }
+    },
+    "sameRubric" : true
+  }
+}
