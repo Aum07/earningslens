@@ -32,6 +32,10 @@
         <jsoup.version>1.23.2</jsoup.version>
         <pdfbox.version>3.0.8</pdfbox.version>
         <jtokkit.version>1.1.0</jtokkit.version>
+        <bucket4j.version>8.19.0</bucket4j.version>
+        <springdoc.version>3.2.0</springdoc.version>
+        <!-- The swagger-core version springdoc 3.2.0 is built with (see DECISIONS.md, E4.8). -->
+        <swagger-core.version>2.2.55</swagger-core.version>
     </properties>
     <dependencies>
         <dependency>
@@ -87,6 +91,18 @@
             <version>${jtokkit.version}</version>
         </dependency>
 
+        <!-- API docs (spec 4): OpenAPI JSON at /v3/api-docs, Swagger UI at /swagger-ui.html. -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc.version}</version>
+        </dependency>
+        <!-- Rate limiting (spec 4 and 13): per-IP token bucket for POST /api/v1/chat. -->
+        <dependency>
+            <groupId>com.bucket4j</groupId>
+            <artifactId>bucket4j_jdk17-core</artifactId>
+            <version>${bucket4j.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -132,6 +148,32 @@
     </dependencies>
     <dependencyManagement>
         <dependencies>
+            <!--
+              Spring AI also depends on swagger 2.2.38, and Maven picked that older copy for the whole project,
+              which breaks springdoc (NoSuchMethodError Schema.$dynamicRef). Pin the version springdoc needs.
+              Spring AI's victools swagger-2 module also pulls the non-jakarta swagger-annotations 2.2.31.
+              It holds the same classes and sat first on the classpath, so it is pinned too.
+            -->
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-annotations-jakarta</artifactId>
+                <version>${swagger-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-core-jakarta</artifactId>
+                <version>${swagger-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-models-jakarta</artifactId>
+                <version>${swagger-core.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.ai</groupId>
                 <artifactId>spring-ai-bom</artifactId>

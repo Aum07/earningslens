@@ -1,0 +1,45 @@
+### EarningsLens chat API: manual requests for IntelliJ's HTTP Client.
+### Start the app first (Spring Boot run config, default profile, Docker DB running).
+### Only DEV questions here (q001-q034). Never paste test-split questions (q035-q084).
+
+### 1. Real answer (PAID: one gpt-4o-mini call, about 0.2 US cents). Dev item q001.
+POST http://localhost:8080/api/v1/chat
+Content-Type: application/json
+
+{
+  "question": "What was Microsoft's total revenue in Q2 FY2026?"
+}
+
+### 2. Abstention before the model (FREE: the quarter is not in the corpus, so no LLM call).
+POST http://localhost:8080/api/v1/chat
+Content-Type: application/json
+
+{
+  "question": "What was Microsoft's revenue in Q1 FY2024?"
+}
+
+### 3. Validation error (FREE: question shorter than 3 characters, expect 400).
+POST http://localhost:8080/api/v1/chat
+Content-Type: application/json
+
+{
+  "question": "ab"
+}
+
+### 4. Corpus documents with chunk counts (FREE, E4.6).
+GET http://localhost:8080/api/v1/documents
+
+### 5. Companies and their quarters, for the filter dropdowns (FREE, E4.6).
+GET http://localhost:8080/api/v1/companies
+
+### 6. Latest eval report (FREE, E4.6). 404 until the Phase 5 eval run writes eval/reports/latest.json.
+GET http://localhost:8080/api/v1/eval/latest
+
+### 7. Rate limit check (FREE: same no-cost abstention as request 2). Click run 11 times within a minute:
+###    runs 1-10 give 200, run 11 gives 429 with a Retry-After header (E4.7). Counts toward the daily cap of 300.
+POST http://localhost:8080/api/v1/chat
+Content-Type: application/json
+
+{
+  "question": "What was Microsoft's revenue in Q1 FY2024?"
+}

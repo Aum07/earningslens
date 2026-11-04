@@ -49,6 +49,9 @@ earningslens:
     rrf-k: 60
     min-similarity: 0.531 # chosen on dev in E3.7: blocks no answerable dev question (DECISIONS.md)
     mode: D               # ablation config for the API (spec 11.4): C + the min-similarity abstention
+  api:
+    latest-eval-report: ../eval/reports/latest.json   # written by the Phase 5 eval run (spec 11.5)
+    cors-allowed-origins: http://localhost:4200        # Angular dev server; prod sets FRONTEND_ORIGIN
   rate-limit:
     requests-per-minute-per-ip: 10
     daily-chat-cap: 300
@@ -69,6 +72,12 @@ earningslens:
     max-retries: 5
     initial-backoff-millis: 1000  # 1s, 2s, 4s, 8s, 16s
     max-backoff-millis: 30000
+
+# Error bodies are ProblemDetail (GlobalExceptionHandler); never show stack traces or internal messages.
+server:
+  error:
+    include-stacktrace: never
+    include-message: never
 
 management:
   endpoints:

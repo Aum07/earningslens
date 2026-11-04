@@ -13,8 +13,12 @@ spring:
 earningslens:
   sec:
     user-agent: ${SEC_USER_AGENT}
+  api:
+    cors-allowed-origins: ${FRONTEND_ORIGIN}   # the Static Web Apps URL (Phase 8)
 
 server:
+  # Azure Container Apps sits behind a proxy: trust its X-Forwarded-For so the rate limit sees the real client IP.
+  forward-headers-strategy: framework
   error:
     include-stacktrace: never
     include-message: never
