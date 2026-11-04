@@ -48,7 +48,8 @@ earningslens:
     keyword-candidates: 30
     rrf-k: 60
     min-similarity: 0.531 # chosen on dev in E3.7: blocks no answerable dev question (DECISIONS.md)
-    mode: D               # ablation config for the API (spec 11.4): C + the min-similarity abstention
+    mode: C               # ablation config for the API (spec 11.4). Was D until 2026-11-04: on the test split D's
+                          # threshold wrongly declined 4 of 45 answerable questions (C: 1); see docs/error-analysis.md
   api:
     latest-eval-report: ../eval/reports/latest.json   # written by the Phase 5 eval run (spec 11.5)
     cors-allowed-origins: http://localhost:4200        # Angular dev server; prod sets FRONTEND_ORIGIN
