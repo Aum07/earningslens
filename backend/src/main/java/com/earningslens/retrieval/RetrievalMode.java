@@ -3,7 +3,7 @@ package com.earningslens.retrieval;
 /**
  * Ablation configs from spec 11.4. Explicit filters (from the UI or an eval item) apply in every mode.
  *
- * A: vector search only, k = 8.
+ * A: vector search only (same k as the others: earningslens.retrieval.k, see DECISIONS.md E5.4).
  * B: hybrid (vector + keyword, RRF).
  * C: B + filters from QueryParser + per-period retrieval.
  * D: C + evidence threshold abstention (min-similarity).

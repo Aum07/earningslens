@@ -1,0 +1,328 @@
+{
+  "date" : "2026-11-04",
+  "split" : "dev",
+  "config" : "C",
+  "answerModel" : "gpt-4o-mini",
+  "judgeModel" : "gpt-4.1",
+  "items" : 3,
+  "judged" : 3,
+  "parsed" : 3,
+  "worstCaseUsd" : 0.364998,
+  "actualUsd" : 0.04116,
+  "rows" : [ {
+    "id" : "q001",
+    "category" : "single_fact",
+    "question" : "What was Microsoft's total revenue in Q2 FY2026?",
+    "goldAnswer" : "$81.3 billion, up 17% year over year (15% in constant currency).",
+    "answer" : "Microsoft's total revenue in FY2026 Q2 was $81.3 billion, which represented an increase of 17% compared to the same quarter in the previous fiscal year [13].",
+    "abstained" : false,
+    "abstainReason" : null,
+    "sentences" : [ {
+      "text" : "Microsoft's total revenue in FY2026 Q2 was $81.3 billion, which represented an increase of 17% compared to the same quarter in the previous fiscal year [13].",
+      "markers" : [ 13 ]
+    } ],
+    "citationWarnings" : [ ],
+    "answerPromptTokens" : 7843,
+    "answerCompletionTokens" : 38,
+    "verdict" : {
+      "claims" : [ {
+        "claim" : "Microsoft's total revenue in FY2026 Q2 was $81.3 billion",
+        "sourceMarkers" : [ 13 ],
+        "reason" : "Source [13] states 'Revenue was $81.3 billion'.",
+        "supported" : true
+      }, {
+        "claim" : "This represented an increase of 17% compared to the same quarter in the previous fiscal year",
+        "sourceMarkers" : [ 13 ],
+        "reason" : "Source [13] states 'increased 17%'.",
+        "supported" : true
+      } ],
+      "citations" : [ {
+        "sentenceId" : 1,
+        "marker" : 13,
+        "reason" : "Source [13] directly states both the revenue figure and the 17% increase for FY2026 Q2.",
+        "supports" : true
+      } ],
+      "correctness" : 4,
+      "correctnessReason" : "The answer gives the total revenue ($81.3 billion) and the year-over-year growth (17%), matching the reference answer. It omits the constant currency growth (15%), which is a minor detail.",
+      "model" : "gpt-4.1-2025-04-14",
+      "promptTokens" : 1604,
+      "completionTokens" : 191,
+      "attempts" : 1
+    },
+    "faithfulness" : 1.0,
+    "citationPrecision" : 1.0
+  }, {
+    "id" : "q015",
+    "category" : "multi_quarter",
+    "question" : "How did Google Cloud revenue and growth develop from Q4 2025 to Q3 2026?",
+    "goldAnswer" : "$17.7B (+48%), $20.0B (+63%), $24.8B (+82%), $30.7B (+103%): growth accelerated every quarter.",
+    "answer" : "Here is the development of Google Cloud revenue and growth from Q4 2025 to Q3 2026:\n\n**FY2025 Q4**\n- Google Cloud revenue: $17.7 billion\n- Year-over-year growth: 48% [1].\n\n**FY2026 Q1**\n- Google Cloud revenue: $20 billion\n- Year-over-year growth: 63% [2].\n\n**FY2026 Q2**\n- Google Cloud revenue: $24.8 billion\n- Year-over-year growth: 82% [11].\n\n**FY2026 Q3**\n- Google Cloud revenue: $30.7 billion\n- Year-over-year growth: 103% [20].\n\nIn summary, Google Cloud revenue increased from $17.7 billion in Q4 2025 to $30.7 billion in Q3 2026, showing significant growth rates of 48%, 63%, 82%, and 103% respectively across the quarters.",
+    "abstained" : false,
+    "abstainReason" : null,
+    "sentences" : [ {
+      "text" : "- Google Cloud revenue: $17.7 billion",
+      "markers" : [ ]
+    }, {
+      "text" : "- Year-over-year growth: 48% [1].",
+      "markers" : [ 1 ]
+    }, {
+      "text" : "- Google Cloud revenue: $20 billion",
+      "markers" : [ ]
+    }, {
+      "text" : "- Year-over-year growth: 63% [2].",
+      "markers" : [ 2 ]
+    }, {
+      "text" : "- Google Cloud revenue: $24.8 billion",
+      "markers" : [ ]
+    }, {
+      "text" : "- Year-over-year growth: 82% [11].",
+      "markers" : [ 11 ]
+    }, {
+      "text" : "- Google Cloud revenue: $30.7 billion",
+      "markers" : [ ]
+    }, {
+      "text" : "- Year-over-year growth: 103% [20].",
+      "markers" : [ 20 ]
+    }, {
+      "text" : "In summary, Google Cloud revenue increased from $17.7 billion in Q4 2025 to $30.7 billion in Q3 2026, showing significant growth rates of 48%, 63%, 82%, and 103% respectively across the quarters.",
+      "markers" : [ ]
+    } ],
+    "citationWarnings" : [ "5 of 9 sentences have no citation." ],
+    "answerPromptTokens" : 9828,
+    "answerCompletionTokens" : 196,
+    "verdict" : {
+      "claims" : [ {
+        "claim" : "Google Cloud revenue in Q4 2025 was $17.7 billion",
+        "sourceMarkers" : [ 1 ],
+        "reason" : "Source [1] states that Cloud revenue was up 48% to $17.7 billion in Q4 2025.",
+        "supported" : true
+      }, {
+        "claim" : "Google Cloud year-over-year growth in Q4 2025 was 48%",
+        "sourceMarkers" : [ 1 ],
+        "reason" : "Source [1] states Cloud revenue was up 48% in Q4 2025.",
+        "supported" : true
+      }, {
+        "claim" : "Google Cloud revenue in Q1 2026 was $20 billion",
+        "sourceMarkers" : [ 2 ],
+        "reason" : "Source [2] states Cloud revenues were up 63% to $20 billion in Q1 2026.",
+        "supported" : true
+      }, {
+        "claim" : "Google Cloud year-over-year growth in Q1 2026 was 63%",
+        "sourceMarkers" : [ 2 ],
+        "reason" : "Source [2] states Cloud revenues were up 63% in Q1 2026.",
+        "supported" : true
+      }, {
+        "claim" : "Google Cloud revenue in Q2 2026 was $24.8 billion",
+        "sourceMarkers" : [ 11 ],
+        "reason" : "Source [11] states Cloud revenues were up 82% to $24.8 billion in Q2 2026.",
+        "supported" : true
+      }, {
+        "claim" : "Google Cloud year-over-year growth in Q2 2026 was 82%",
+        "sourceMarkers" : [ 11 ],
+        "reason" : "Source [11] states Cloud revenues were up 82% in Q2 2026.",
+        "supported" : true
+      }, {
+        "claim" : "Google Cloud revenue in Q3 2026 was $30.7 billion",
+        "sourceMarkers" : [ 20 ],
+        "reason" : "Source [20] states Google Cloud revenues increased 103% to $30.7 billion in Q3 2026.",
+        "supported" : true
+      }, {
+        "claim" : "Google Cloud year-over-year growth in Q3 2026 was 103%",
+        "sourceMarkers" : [ 20 ],
+        "reason" : "Source [20] states Google Cloud revenues increased 103% in Q3 2026.",
+        "supported" : true
+      }, {
+        "claim" : "Google Cloud revenue increased from $17.7 billion in Q4 2025 to $30.7 billion in Q3 2026, with growth rates of 48%, 63%, 82%, and 103% respectively",
+        "sourceMarkers" : [ 1, 2, 11, 20 ],
+        "reason" : "Each quarterly revenue and growth rate is supported by the respective sources for each quarter.",
+        "supported" : true
+      } ],
+      "citations" : [ {
+        "sentenceId" : 2,
+        "marker" : 1,
+        "reason" : "Source [1] states that Google Cloud revenue was up 48% in Q4 2025, supporting the claim.",
+        "supports" : true
+      }, {
+        "sentenceId" : 4,
+        "marker" : 2,
+        "reason" : "Source [2] states that Google Cloud revenue was up 63% in Q1 2026, supporting the claim.",
+        "supports" : true
+      }, {
+        "sentenceId" : 6,
+        "marker" : 11,
+        "reason" : "Source [11] states that Google Cloud revenue was up 82% in Q2 2026, supporting the claim.",
+        "supports" : true
+      }, {
+        "sentenceId" : 8,
+        "marker" : 20,
+        "reason" : "Source [20] states that Google Cloud revenue was up 103% in Q3 2026, supporting the claim.",
+        "supports" : true
+      } ],
+      "correctness" : 5,
+      "correctnessReason" : "The answer provides all the key facts from the reference answer: the revenue and year-over-year growth rates for Google Cloud for each quarter from Q4 2025 to Q3 2026, and correctly notes that growth accelerated every quarter. No key detail is missing or incorrect.",
+      "model" : "gpt-4.1-2025-04-14",
+      "promptTokens" : 3849,
+      "completionTokens" : 736,
+      "attempts" : 1
+    },
+    "faithfulness" : 1.0,
+    "citationPrecision" : 1.0
+  }, {
+    "id" : "q021",
+    "category" : "qualitative",
+    "question" : "What is Muse and how did Meta describe its launch in Q3 2026?",
+    "goldAnswer" : "Muse is Meta's personal agent, the product form of its personal superintelligence vision; one of its most successful launches ever.",
+    "answer" : "**FY2026 Q3**\n\nIn Q3 2026, Meta launched Muse, a personal agent designed to enhance user productivity and engagement. Within just a month and a half of its launch, over 10 million people in the U.S. and Canada had set up Muse personal agents, with about 25% of users engaging with it daily. The most common use case for Muse was shopping, with users averaging over $200 per purchase, and over 25% of Muse weekly actives engaging in shopping activities [1][4][9].\n\nMark Zuckerberg described Muse as a significant milestone towards delivering personal superintelligence, emphasizing its potential to help users achieve various goals, such as improving relationships and managing tasks more efficiently [4][7]. The company is focused on scaling Muse to serve billions of users, leveraging its strengths in technology and user engagement [1][3].\n\nMeta also reported that Muse is compute-intensive, and they expect to improve its cost efficiency by more than tenfold over the next year, which will help in achieving profitability as revenue scales [2][3].",
+    "abstained" : false,
+    "abstainReason" : null,
+    "sentences" : [ {
+      "text" : "In Q3 2026, Meta launched Muse, a personal agent designed to enhance user productivity and engagement.",
+      "markers" : [ ]
+    }, {
+      "text" : "Within just a month and a half of its launch, over 10 million people in the U.S. and Canada had set up Muse personal agents, with about 25% of users engaging with it daily.",
+      "markers" : [ ]
+    }, {
+      "text" : "The most common use case for Muse was shopping, with users averaging over $200 per purchase, and over 25% of Muse weekly actives engaging in shopping activities [1][4][9].",
+      "markers" : [ 1, 4, 9 ]
+    }, {
+      "text" : "Mark Zuckerberg described Muse as a significant milestone towards delivering personal superintelligence, emphasizing its potential to help users achieve various goals, such as improving relationships and managing tasks more efficiently [4][7].",
+      "markers" : [ 4, 7 ]
+    }, {
+      "text" : "The company is focused on scaling Muse to serve billions of users, leveraging its strengths in technology and user engagement [1][3].",
+      "markers" : [ 1, 3 ]
+    }, {
+      "text" : "Meta also reported that Muse is compute-intensive, and they expect to improve its cost efficiency by more than tenfold over the next year, which will help in achieving profitability as revenue scales [2][3].",
+      "markers" : [ 2, 3 ]
+    } ],
+    "citationWarnings" : [ "2 of 6 sentences have no citation." ],
+    "answerPromptTokens" : 8019,
+    "answerCompletionTokens" : 217,
+    "verdict" : {
+      "claims" : [ {
+        "claim" : "Meta launched Muse in Q3 2026",
+        "sourceMarkers" : [ 4 ],
+        "reason" : "Source [4] states that Muse was launched in the last few months, and the transcript is from Q3 2026.",
+        "supported" : true
+      }, {
+        "claim" : "Muse is a personal agent designed to enhance user productivity and engagement",
+        "sourceMarkers" : [ 1, 4 ],
+        "reason" : "Source [4] describes Muse as a personal agent and discusses its use cases, including improving relationships and managing tasks. Source [1] mentions productivity connectors.",
+        "supported" : true
+      }, {
+        "claim" : "Within a month and a half of launch, over 10 million people in the US and Canada set up Muse personal agents",
+        "sourceMarkers" : [ 4, 9 ],
+        "reason" : "Source [4] and [9] both state that over 10 million people in the US and Canada set up Muse within a month and a half of launch.",
+        "supported" : true
+      }, {
+        "claim" : "About 25% of users engage with Muse daily",
+        "sourceMarkers" : [ 4 ],
+        "reason" : "Source [4] states that about 25% of people who set up Muse use it on any given day.",
+        "supported" : true
+      }, {
+        "claim" : "The most common use case for Muse was shopping",
+        "sourceMarkers" : [ 1, 4 ],
+        "reason" : "Source [4] and [1] both state that shopping is the most common use case for Muse.",
+        "supported" : true
+      }, {
+        "claim" : "Users averaged over $200 per purchase with Muse",
+        "sourceMarkers" : [ 4 ],
+        "reason" : "Source [4] states that the average purchase size is over $200.",
+        "supported" : true
+      }, {
+        "claim" : "Over 25% of Muse weekly actives engaged in shopping activities",
+        "sourceMarkers" : [ 1, 2, 4 ],
+        "reason" : "Source [4] and [1] state that over 25% of Muse weekly actives engage in shopping. Source [2] also confirms this.",
+        "supported" : true
+      }, {
+        "claim" : "Mark Zuckerberg described Muse as a significant milestone towards delivering personal superintelligence",
+        "sourceMarkers" : [ 4, 7 ],
+        "reason" : "Source [4] and [7] both describe Muse as a major milestone towards delivering personal superintelligence.",
+        "supported" : true
+      }, {
+        "claim" : "Muse helps users achieve various goals, such as improving relationships and managing tasks more efficiently",
+        "sourceMarkers" : [ 4 ],
+        "reason" : "Source [4] lists these as examples of what Muse can help users achieve.",
+        "supported" : true
+      }, {
+        "claim" : "Meta is focused on scaling Muse to serve billions of users",
+        "sourceMarkers" : [ 1, 3 ],
+        "reason" : "Source [1] and [3] both state that Meta aims to scale Muse to billions of users.",
+        "supported" : true
+      }, {
+        "claim" : "Meta is leveraging its strengths in technology and user engagement to scale Muse",
+        "sourceMarkers" : [ 1 ],
+        "reason" : "Source [1] mentions that the goals of the next phase play to many of Meta's strengths, including technology and user engagement.",
+        "supported" : true
+      }, {
+        "claim" : "Muse is compute-intensive",
+        "sourceMarkers" : [ 2, 3 ],
+        "reason" : "Source [2] and [3] both state that Muse is compute-intensive.",
+        "supported" : true
+      }, {
+        "claim" : "Meta expects to improve Muse's cost efficiency by more than tenfold over the next year",
+        "sourceMarkers" : [ 2, 3 ],
+        "reason" : "Source [2] and [3] both state that Meta expects to improve Muse's cost efficiency by more than tenfold over the next year.",
+        "supported" : true
+      }, {
+        "claim" : "Improved cost efficiency will help Muse achieve profitability as revenue scales",
+        "sourceMarkers" : [ 2, 3 ],
+        "reason" : "Source [2] and [3] both state that improved cost efficiency will help Muse become profitable as revenue scales.",
+        "supported" : true
+      } ],
+      "citations" : [ {
+        "sentenceId" : 3,
+        "marker" : 1,
+        "reason" : "Source [1] states that shopping is the most common use case and over 25% of Muse weekly actives engage in shopping.",
+        "supports" : true
+      }, {
+        "sentenceId" : 3,
+        "marker" : 4,
+        "reason" : "Source [4] states that shopping is the most common use case, average purchase size is over $200, and over 25% of weekly actives engage in shopping.",
+        "supports" : true
+      }, {
+        "sentenceId" : 3,
+        "marker" : 9,
+        "reason" : "Source [9] discusses user numbers and compute intensity, but does not mention shopping or purchase size.",
+        "supports" : false
+      }, {
+        "sentenceId" : 4,
+        "marker" : 4,
+        "reason" : "Source [4] describes Muse as a milestone towards personal superintelligence and its potential to help users achieve various goals.",
+        "supports" : true
+      }, {
+        "sentenceId" : 4,
+        "marker" : 7,
+        "reason" : "Source [7] quotes Zuckerberg calling Muse a milestone towards delivering personal superintelligence.",
+        "supports" : true
+      }, {
+        "sentenceId" : 5,
+        "marker" : 1,
+        "reason" : "Source [1] states Meta's goal is to scale Muse to billions of people and leverage its strengths.",
+        "supports" : true
+      }, {
+        "sentenceId" : 5,
+        "marker" : 3,
+        "reason" : "Source [3] states Meta is building capacity to serve more than a billion people and discusses scaling Muse.",
+        "supports" : true
+      }, {
+        "sentenceId" : 6,
+        "marker" : 2,
+        "reason" : "Source [2] states Muse is compute-intensive and Meta expects to improve cost efficiency by more than tenfold, leading to profitability as revenue scales.",
+        "supports" : true
+      }, {
+        "sentenceId" : 6,
+        "marker" : 3,
+        "reason" : "Source [3] states Muse is compute-intensive and Meta expects to improve cost efficiency by more than tenfold, leading to profitability as revenue scales.",
+        "supports" : true
+      } ],
+      "correctness" : 5,
+      "correctnessReason" : "The answer covers all key facts from the reference: Muse is Meta's personal agent, the product form of its personal superintelligence vision, and was described as one of its most successful launches ever. The answer also provides additional accurate details from the sources, such as user numbers and use cases, without contradicting the reference.",
+      "model" : "gpt-4.1-2025-04-14",
+      "promptTokens" : 4645,
+      "completionTokens" : 1178,
+      "attempts" : 1
+    },
+    "faithfulness" : 1.0,
+    "citationPrecision" : 0.8888888888888888
+  } ]
+}

@@ -34,7 +34,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * The eval job (spec 11.5), profile "eval". For now only the retrieval-only task (roadmap E3.6):
+ * The eval job (spec 11.5), profile "eval". Task "judge-sample" (E5.1) is handed to {@link JudgeSampleRun}.
+ * Task "retrieval" (roadmap E3.6):
  * runs the retriever for every item of the split under each config and writes a report to
  * eval/reports/. No LLM calls; the only paid calls are the question embeddings.
  *
@@ -49,6 +50,13 @@ public class EvalRunner implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(EvalRunner.class);
 
+    static final String RETRIEVAL = "retrieval";
+    static final String JUDGE_SAMPLE = "judge-sample";
+    static final String LABEL_PREP = "label-prep";
+    static final String JUDGE_AGREEMENT = "judge-agreement";
+    static final String FULL = "full";
+    static final List<String> TASKS = List.of(RETRIEVAL, JUDGE_SAMPLE, LABEL_PREP, JUDGE_AGREEMENT, FULL);
+
     private final EvalProperties eval;
     private final EvalDatasetLoader loader;
     private final QueryParser parser;
@@ -62,11 +70,16 @@ public class EvalRunner implements CommandLineRunner {
     private final TokenCounter tokens;
     private final JdbcTemplate jdbc;
     private final RetrievalReportWriter writer;
+    private final JudgeSampleRun judgeSample;
+    private final LabelPrepRun labelPrep;
+    private final JudgeAgreementRun judgeAgreement;
+    private final FullEvalRun fullEval;
 
     public EvalRunner(EvalProperties eval, EvalDatasetLoader loader, QueryParser parser, PeriodResolver resolver,
                       VectorSearchRepository vectorSearch, KeywordSearchRepository keywordSearch, QueryEmbedder embedder,
                       RetrievalProperties retrieval, ChunkingProperties chunking, LlmProperties llm, TokenCounter tokens,
-                      JdbcTemplate jdbc, RetrievalReportWriter writer) {
+                      JdbcTemplate jdbc, RetrievalReportWriter writer, JudgeSampleRun judgeSample,
+                      LabelPrepRun labelPrep, JudgeAgreementRun judgeAgreement, FullEvalRun fullEval) {
         this.eval = eval;
         this.loader = loader;
         this.parser = parser;
@@ -80,12 +93,32 @@ public class EvalRunner implements CommandLineRunner {
         this.tokens = tokens;
         this.jdbc = jdbc;
         this.writer = writer;
+        this.judgeSample = judgeSample;
+        this.labelPrep = labelPrep;
+        this.judgeAgreement = judgeAgreement;
+        this.fullEval = fullEval;
     }
 
     @Override
     public void run(String... args) throws Exception {
         EvalSplit split = EvalSplit.fromJson(eval.split());
-        checkAllowed(eval.task(), split);
+        checkAllowed(eval.task(), split, eval.finalTestRun());
+        if (JUDGE_SAMPLE.equals(eval.task())) {
+            judgeSample.run(split);   // E5.1: a few dev answers through the judge
+            return;
+        }
+        if (LABEL_PREP.equals(eval.task())) {
+            labelPrep.run(split);     // E5.2 step 1: answers to label by hand
+            return;
+        }
+        if (JUDGE_AGREEMENT.equals(eval.task())) {
+            judgeAgreement.run(split);   // E5.2 step 2: judge vs human labels
+            return;
+        }
+        if (FULL.equals(eval.task())) {
+            fullEval.run(split, parseModes(eval.config()));   // E5.3: every metric, every item
+            return;
+        }
         List<RetrievalMode> modes = parseModes(eval.config());
 
         List<EvalItem> items = loader.load(Path.of(eval.datasetPath()), split);
@@ -330,12 +363,21 @@ public class EvalRunner implements CommandLineRunner {
 
     /** Retrieval-only runs are for tuning, so they may only use the dev split. */
     static void checkAllowed(String task, EvalSplit split) {
-        if (!"retrieval".equals(task)) {
-            throw new IllegalArgumentException("eval.task '" + task + "' is not available yet; only 'retrieval' (E3.6)");
+        checkAllowed(task, split, false);
+    }
+
+    /**
+     * Every task runs on dev. The test split is only for the one final run (E5.4): task "full" with
+     * --eval.final-test-run=true. FullEvalRun.checkFinalTestRun then demands all four configs and no earlier test report.
+     */
+    static void checkAllowed(String task, EvalSplit split, boolean finalTestRun) {
+        if (!TASKS.contains(task)) {
+            throw new IllegalArgumentException("eval.task '" + task + "' is not available yet; only " + TASKS);
         }
-        if (split == EvalSplit.TEST) {
-            throw new IllegalArgumentException("Retrieval-only runs are refused on the test split: tune on dev only. "
-                    + "The test split is run once, with all configs, in E5.4.");
+        if (split == EvalSplit.TEST && !(FULL.equals(task) && finalTestRun)) {
+            throw new IllegalArgumentException("eval.task '" + task + "' is refused on the test split: tune on dev only. "
+                    + "The test split is run once (E5.4) with --eval.task=full --eval.config=A,B,C,D "
+                    + "--eval.final-test-run=true.");
         }
     }
 

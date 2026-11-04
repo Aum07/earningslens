@@ -1,0 +1,30 @@
+{"label_id":"q001-C","item_id":"q001","config":"C","faithful":true,"correctness":4,"note":"omits 15% constant-currency growth"}
+{"label_id":"q002-C","item_id":"q002","config":"C","faithful":true,"correctness":4,"note":"omits 31% constant-currency growth"}
+{"label_id":"q003-C","item_id":"q003","config":"C","faithful":true,"correctness":5,"note":""}
+{"label_id":"q004-C","item_id":"q004","config":"C","faithful":true,"correctness":5,"note":""}
+{"label_id":"q005-C","item_id":"q005","config":"C","faithful":true,"correctness":5,"note":""}
+{"label_id":"q006-C","item_id":"q006","config":"C","faithful":true,"correctness":5,"note":""}
+{"label_id":"q007-C","item_id":"q007","config":"C","faithful":true,"correctness":5,"note":""}
+{"label_id":"q008-C","item_id":"q008","config":"C","faithful":true,"correctness":5,"note":""}
+{"label_id":"q009-C","item_id":"q009","config":"C","faithful":true,"correctness":5,"note":""}
+{"label_id":"q010-C","item_id":"q010","config":"C","faithful":true,"correctness":4,"note":"omits the approximately six-week timeframe"}
+{"label_id":"q011-C","item_id":"q011","config":"C","faithful":true,"correctness":5,"note":""}
+{"label_id":"q012-C","item_id":"q012","config":"C","faithful":false,"correctness":2,"note":"quarter labels are shifted: each range is assigned to the following quarter"}
+{"label_id":"q013-C","item_id":"q013","config":"C","faithful":true,"correctness":4,"note":"omits that the Q1 update included the Intersect acquisition"}
+{"label_id":"q014-C","item_id":"q014","config":"C","faithful":false,"correctness":2,"note":"Q3 40% is omitted; Q4 is 43%, not 41%"}
+{"label_id":"q015-C","item_id":"q015","config":"C","faithful":true,"correctness":5,"note":""}
+{"label_id":"q016-C","item_id":"q016","config":"C","faithful":true,"correctness":5,"note":""}
+{"label_id":"q017-C","item_id":"q017","config":"C","faithful":true,"correctness":4,"note":"omits the year-over-year growth rates"}
+{"label_id":"q018-C","item_id":"q018","config":"C","faithful":false,"correctness":2,"note":"confuses annual CapEx guidance with quarterly spend; Q2 and Q3 amounts are not answered"}
+{"label_id":"q019-C","item_id":"q019","config":"C","faithful":false,"correctness":1,"note":"Q4 $41B and Q1 $45.2B actual CapEx figures and related details are source-supported; however, the Q3 statements are attributed to Amy Hood, which the cited Q3 filings/press release do not support."}
+{"label_id":"q021-C","item_id":"q021","config":"C","faithful":true,"correctness":5,"note":""}
+{"label_id":"q022-C","item_id":"q022","config":"C","faithful":false,"correctness":4,"note":"the cited sources compare performance with prior generations, not competitors; omits Cloud revenue contribution"}
+{"label_id":"q023-C","item_id":"q023","config":"C","faithful":true,"correctness":3,"note":"omits the gradual Cloud gross-margin impact over six years"}
+{"label_id":"q024-C","item_id":"q024","config":"C","faithful":true,"correctness":5,"note":""}
+{"label_id":"q025-C","item_id":"q025","config":"C","faithful":true,"correctness":5,"note":""}
+{"label_id":"q032-A","item_id":"q032","config":"A","faithful":true,"correctness":1,"note":"The answer explicitly says this is revenue for the three months ended March 31; that quarterly figure is supported, but it does not answer the March-only question."}
+{"label_id":"q012-A","item_id":"q012","config":"A","faithful":false,"correctness":4,"note":"Q2 should be described as narrowed from $125-145B, not unchanged/remained"}
+{"label_id":"q013-A","item_id":"q013","config":"A","faithful":true,"correctness":5,"note":""}
+{"label_id":"q014-A","item_id":"q014","config":"A","faithful":true,"correctness":3,"note":"omits the Q3 FY2026 growth rate of 40%"}
+{"label_id":"q015-A","item_id":"q015","config":"A","faithful":false,"correctness":3,"note":"Q1 total should be $20.0B, not $7.8B; Q2 should be $24.8B, not $18.9B"}
+{"label_id":"q016-A","item_id":"q016","config":"A","faithful":true,"correctness":4,"note":"all revenue amounts are correct; omits the year-over-year growth rates"}

@@ -74,7 +74,7 @@ public class PromptBuilder {
     }
 
     /** "MSFT | FY2026 Q1 | TRANSCRIPT | p.4", "... | section: Segment Results", or the first three parts only. */
-    static String label(RetrievedChunk chunk) {
+    public static String label(RetrievedChunk chunk) {   // public: the eval judge shows sources the same way
         String label = "%s | FY%d Q%d | %s".formatted(
                 chunk.ticker(), chunk.fiscalYear(), chunk.fiscalQuarter(), chunk.docType());
         String pages = pages(chunk);
@@ -105,7 +105,7 @@ public class PromptBuilder {
     }
 
     /** Chunk text without the header lines the label repeats. */
-    static String body(RetrievedChunk chunk) {
+    public static String body(RetrievedChunk chunk) {   // public: the eval judge shows sources the same way
         String text = chunk.content().strip();
         String first = firstLine(text);
         if (first.startsWith("[") && first.endsWith("]")) {

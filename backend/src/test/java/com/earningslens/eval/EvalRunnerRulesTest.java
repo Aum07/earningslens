@@ -24,9 +24,47 @@ class EvalRunnerRulesTest {
     }
 
     @Test
-    void onlyTheRetrievalTaskExistsSoFar() {
-        assertThatThrownBy(() -> EvalRunner.checkAllowed("full", EvalSplit.DEV))
+    void testSplitOpensOnlyForTheFinalFullRun() {
+        EvalRunner.checkAllowed("full", EvalSplit.TEST, true);   // the one final run (E5.4)
+        assertThatThrownBy(() -> EvalRunner.checkAllowed("full", EvalSplit.TEST, false))
+                .hasMessageContaining("--eval.final-test-run=true");
+        for (String task : List.of("retrieval", "judge-sample", "label-prep", "judge-agreement")) {
+            assertThatThrownBy(() -> EvalRunner.checkAllowed(task, EvalSplit.TEST, true)).as(task)
+                    .hasMessageContaining("test split");
+        }
+    }
+
+    @Test
+    void unknownTasksAreRefused() {
+        assertThatThrownBy(() -> EvalRunner.checkAllowed("bogus", EvalSplit.DEV))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void judgeAndLabelTasksRunOnDevOnly() {
+        for (String task : List.of("judge-sample", "label-prep", "judge-agreement", "full")) {
+            EvalRunner.checkAllowed(task, EvalSplit.DEV);   // allowed
+            assertThatThrownBy(() -> EvalRunner.checkAllowed(task, EvalSplit.TEST))
+                    .as(task)
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("test split");
+        }
+    }
+
+    @Test
+    void judgeSampleIdsArePickedInOrderAndMustExist() {
+        List<EvalItem> dev = List.of(item("q001"), item("q015"), item("q021"));
+
+        assertThat(JudgeSampleRun.pick(dev, " q021, q001 ,q021")).extracting(EvalItem::id).containsExactly("q021", "q001");
+        assertThatThrownBy(() -> JudgeSampleRun.pick(dev, "q001,q040"))   // q040 is a test item
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("q040");
+        assertThatThrownBy(() -> JudgeSampleRun.pick(dev, " , "))
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("empty");
+    }
+
+    private static EvalItem item(String id) {
+        return new EvalItem(id, EvalSplit.DEV, EvalCategory.UNANSWERABLE, "Question " + id + "?", null, false,
+                "Not in the documents.", List.of());
     }
 
     @Test
