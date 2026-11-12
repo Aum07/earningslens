@@ -1,0 +1,68 @@
+:host {
+  display: block;
+  padding: 12px 14px 12px 16px;
+  background: var(--el-panel);
+  border: 1px solid var(--el-rule);
+  border-left: 3px solid var(--el-rule);
+  border-radius: 8px;
+  scroll-margin: 24px;
+}
+
+/* Selected: amber band, bright border and a "Selected" label (not colour alone). */
+:host(.highlighted) {
+  border-color: var(--el-text);
+  border-left-color: var(--el-amber);
+  border-left-width: 6px;
+  padding-left: 13px;
+}
+
+:host(:focus-visible) {
+  outline: 2px solid var(--el-amber);
+  outline-offset: 2px;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  align-items: baseline;
+  font-family: var(--el-mono);
+  font-size: 12px;
+  color: var(--el-muted);
+}
+
+.marker {
+  font-weight: 600;
+  color: var(--el-link);
+}
+
+.ticker {
+  font-weight: 600;
+  color: var(--el-text);
+}
+
+.selected-tag {
+  margin-left: auto;
+  padding: 1px 8px;
+  border-radius: 3px;
+  background: var(--el-amber);
+  color: var(--el-on-amber);
+  font-weight: 600;
+}
+
+.location {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--el-muted);
+}
+
+.snippet {
+  margin: 10px 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.open {
+  font-size: 13px;
+  font-weight: 500;
+}

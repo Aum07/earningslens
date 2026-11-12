@@ -1,0 +1,198 @@
+// Global styles. Source of truth: DESIGN.md in the project root (EarningsLens Design System v1).
+// Component styles use ONLY the tokens below: no hard-coded colours, fonts, radii or shadows.
+@use '@angular/material' as mat;
+
+// ---- DESIGN.md section 8: tokens, verbatim ----
+:root {
+  color-scheme: dark;
+  --bg-canvas:#0B0B0C; --bg-surface:#131315; --bg-raised:#1B1B1F; --bg-hover:#232328;
+  --border:#26262B; --border-strong:#3A3A41;
+  --text-primary:#F2F2F3; --text-secondary:#A1A1AA; --text-tertiary:#6B6B74;
+  --accent:#F8C630; --on-accent:#0B0B0C;
+  --up:#2DBE8C; --down:#F0566A; --info:#6EA8FE;
+  --accent-08:rgba(248,198,48,.08); --accent-10:rgba(248,198,48,.10); --accent-14:rgba(248,198,48,.14);
+  --up-12:rgba(45,190,140,.12); --down-14:rgba(240,86,106,.14); --info-08:rgba(110,168,254,.08);
+  --font-sans:"Geist",ui-sans-serif,system-ui,sans-serif;
+  --font-mono:"Geist Mono",ui-monospace,Menlo,monospace;
+  --r-xs:4px; --r-sm:6px; --r-md:8px; --r-lg:10px; --r-xl:12px; --r-2xl:14px; --r-3xl:16px; --r-modal:18px; --r-pill:999px;
+  --glow-search:0 0 40px rgba(248,198,48,.08);
+  --shadow-drawer:-12px 0 40px rgba(0,0,0,.5);
+  --shadow-modal:0 24px 60px rgba(0,0,0,.6);
+
+  // DESIGN.md section 2 tints that section 8 does not name.
+  --accent-06:rgba(248,198,48,.06); // "Where it's weaker" callout
+  --scrim-drawer:rgba(11,11,12,.60);
+  --scrim-modal:rgba(11,11,12,.72);
+
+  // TEMPORARY (restyle in progress): the previous design's names point at the new tokens, so screens not yet
+  // restyled already use the new palette. Removed once every screen uses the tokens above directly.
+  --el-bg: var(--bg-canvas);
+  --el-panel: var(--bg-surface);
+  --el-panel-2: var(--bg-raised);
+  --el-rule: var(--border);
+  --el-text: var(--text-primary);
+  --el-muted: var(--text-secondary);
+  --el-link: var(--accent);
+  --el-amber: var(--accent);
+  --el-on-amber: var(--on-accent);
+  --el-amber-soft: var(--accent-10);
+  --el-green: var(--up);
+  --el-error: var(--down);
+  --el-sans: var(--font-sans);
+  --el-mono: var(--font-mono);
+}
+
+// ---- Angular Material: its system variables mapped onto the tokens (DESIGN.md wins, no per-component fights) ----
+html {
+  height: 100%;
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
+        primary: mat.$yellow-palette,
+        tertiary: mat.$orange-palette,
+      ),
+      typography: (
+        plain-family: var(--font-sans),
+        brand-family: var(--font-sans),
+      ),
+      density: 0,
+    )
+  );
+
+  --mat-sys-primary: var(--accent);
+  --mat-sys-on-primary: var(--on-accent);
+  --mat-sys-secondary-container: var(--bg-raised);
+  --mat-sys-on-secondary-container: var(--text-primary);
+  --mat-sys-surface: var(--bg-canvas);
+  --mat-sys-on-surface: var(--text-primary);
+  --mat-sys-on-surface-variant: var(--text-secondary);
+  --mat-sys-surface-container-lowest: var(--bg-canvas);
+  --mat-sys-surface-container-low: var(--bg-surface);
+  --mat-sys-surface-container: var(--bg-surface);
+  --mat-sys-surface-container-high: var(--bg-raised);
+  --mat-sys-surface-container-highest: var(--bg-raised);
+  --mat-sys-outline: var(--border-strong);
+  --mat-sys-outline-variant: var(--border);
+  --mat-sys-error: var(--down);
+
+  // Buttons: radius 8 (DESIGN.md section 6).
+  --mat-button-filled-container-shape: var(--r-md);
+  --mat-button-text-container-shape: var(--r-md);
+  --mat-button-outlined-container-shape: var(--r-md);
+  --mat-button-tonal-container-shape: var(--r-md);
+}
+
+body {
+  background: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 24px;
+  margin: 0;
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+// H1 30/36, H2 28/34, H3 16/22, all Geist 600 (DESIGN.md section 3). Components set the size they need.
+h1,
+h2,
+h3 {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 3px;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  background: var(--bg-raised);
+  padding: 1px 5px;
+  border-radius: var(--r-xs);
+}
+
+// Visible keyboard focus everywhere. DESIGN.md has no focus token: --accent is the closest (gold = "in focus").
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+// ---- DESIGN.md section 8 utility classes ----
+.num, .ticker, .cite, .label { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.label { font-size: 11px; line-height: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-tertiary); }
+.cite  { font-size: 13px; font-weight: 500; color: var(--accent); }
+
+// Older screens still use .mono-label; same look as .label until they are restyled.
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+// Form fields: inputs sit on --bg-raised with a --border-strong outline (DESIGN.md section 4: inputs).
+.mat-mdc-form-field .mdc-text-field--outlined {
+  background: var(--bg-raised);
+  border-radius: var(--r-md);
+}
+
+// Select and option panels open in an overlay outside the components.
+.mat-mdc-select-panel {
+  background: var(--bg-surface) !important;
+}
+
+// Compact filter dropdowns (until the Filters modal replaces them).
+.filters {
+  @include mat.form-field-density(-4);
+  @include mat.select-density(-4);
+  --mat-form-field-container-text-size: 13px;
+  --mat-form-field-outlined-label-text-size: 13px;
+  --mat-select-trigger-text-size: 13px;
+}
+
+// Company options: name, then the quarters held in mono.
+.mat-mdc-option .option-name {
+  display: block;
+}
+
+.mat-mdc-option .option-range {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+// Numbers in tables use the mono face and line up by digit (DESIGN.md principle 3).
+table {
+  font-variant-numeric: tabular-nums;
+}
+
+td.num,
+th.num {
+  font-family: var(--font-mono);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Text for screen readers only (e.g. "opens in a new tab"). */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

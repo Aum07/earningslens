@@ -1,0 +1,119 @@
+<article class="about" aria-labelledby="about-title">
+  <h1 id="about-title" class="title">About EarningsLens</h1>
+  <p class="lede">
+    EarningsLens answers questions about company earnings using only the companies' own documents: earnings call
+    transcripts, earnings press releases and 10-Q and 10-K filings. Every claim in an answer links to the passage it
+    came from, and when the documents do not contain the answer, it says so instead of guessing.
+  </p>
+
+  <section aria-labelledby="how-title">
+    <h2 id="how-title" class="section-title">How it works</h2>
+
+    <figure class="diagram">
+      <svg viewBox="0 0 960 330" role="img" aria-labelledby="diagram-title diagram-desc">
+        <title id="diagram-title">EarningsLens architecture</title>
+        <desc id="diagram-desc">
+          Once, offline: filings and transcripts are parsed, split into chunks, embedded and stored in PostgreSQL with
+          pgvector. For every question: the query parser finds companies and quarters, hybrid search retrieves chunks
+          per quarter, gpt-4o-mini writes an answer citing numbered sources, and server-side checks verify the
+          citations and numbers before the answer and sources are shown.
+        </desc>
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" class="arrow-head" />
+          </marker>
+        </defs>
+
+        <text x="16" y="28" class="lane-label">ONCE, OFFLINE: INGESTION</text>
+        <g class="box"><rect x="16" y="44" width="200" height="64" rx="8" /><text x="116" y="72">SEC filings,</text><text x="116" y="92">press releases, calls</text></g>
+        <g class="box"><rect x="264" y="44" width="180" height="64" rx="8" /><text x="354" y="72">Parse and split</text><text x="354" y="92">into chunks</text></g>
+        <g class="box"><rect x="492" y="44" width="180" height="64" rx="8" /><text x="582" y="72">Embed</text><text x="582" y="92">text-embedding-3-small</text></g>
+        <g class="box store"><rect x="720" y="44" width="224" height="64" rx="8" /><text x="832" y="72">PostgreSQL + pgvector</text><text x="832" y="92">chunks, vectors, full text</text></g>
+        <line x1="216" y1="76" x2="262" y2="76" class="flow" marker-end="url(#arrow)" />
+        <line x1="444" y1="76" x2="490" y2="76" class="flow" marker-end="url(#arrow)" />
+        <line x1="672" y1="76" x2="718" y2="76" class="flow" marker-end="url(#arrow)" />
+
+        <text x="16" y="168" class="lane-label">FOR EVERY QUESTION</text>
+        <g class="box"><rect x="16" y="184" width="150" height="64" rx="8" /><text x="91" y="212">Question</text><text x="91" y="232">+ optional filters</text></g>
+        <g class="box"><rect x="206" y="184" width="150" height="64" rx="8" /><text x="281" y="212">Query parser</text><text x="281" y="232">companies, quarters</text></g>
+        <g class="box focus"><rect x="396" y="184" width="170" height="64" rx="8" /><text x="481" y="212">Hybrid search</text><text x="481" y="232">vector + keyword, RRF</text></g>
+        <g class="box"><rect x="606" y="184" width="150" height="64" rx="8" /><text x="681" y="212">gpt-4o-mini</text><text x="681" y="232">cites sources [n]</text></g>
+        <g class="box"><rect x="796" y="184" width="148" height="64" rx="8" /><text x="870" y="212">Checks</text><text x="870" y="232">citations, numbers</text></g>
+        <line x1="166" y1="216" x2="204" y2="216" class="flow" marker-end="url(#arrow)" />
+        <line x1="356" y1="216" x2="394" y2="216" class="flow" marker-end="url(#arrow)" />
+        <line x1="566" y1="216" x2="604" y2="216" class="flow" marker-end="url(#arrow)" />
+        <line x1="756" y1="216" x2="794" y2="216" class="flow" marker-end="url(#arrow)" />
+        <path d="M832,108 C832,140 481,150 481,182" class="flow dashed" marker-end="url(#arrow)" />
+        <text x="610" y="172" class="note-text">searches the stored chunks</text>
+        <line x1="870" y1="248" x2="870" y2="270" class="flow" marker-end="url(#arrow)" />
+        <text x="870" y="288" class="note-text">answer + sources, or</text>
+        <text x="870" y="306" class="note-text">"not in the documents"</text>
+      </svg>
+    </figure>
+
+    <p class="live" role="status">
+      @if (live(); as l) {
+        The live API runs <strong>config {{ l.retrievalMode }}</strong> ({{ descriptions[l.retrievalMode] ?? 'unknown config' }})
+        with {{ l.chatModel }} for answers and {{ l.embeddingModel }} for search. The Evaluation page compares it with
+        the other configurations.
+      } @else {
+        The live API settings could not be loaded right now.
+      }
+    </p>
+  </section>
+
+  <section aria-labelledby="decisions-title">
+    <h2 id="decisions-title" class="section-title">Design decisions</h2>
+    <dl class="pairs">
+      <dt>Answers only from sources</dt>
+      <dd>The model sees numbered passages and must cite them. The server removes citations to sources that do not
+        exist and flags numbers that do not appear in the cited passages.</dd>
+      <dt>Hybrid search, per quarter</dt>
+      <dd>Vector search finds passages with similar meaning, keyword search finds exact terms and figures, and the
+        two rankings are merged with reciprocal rank fusion. A question about several quarters searches each quarter
+        separately so none is crowded out.</dd>
+      <dt>A parser, not an LLM, for filters</dt>
+      <dd>Company names and fiscal quarters are read from the question by deterministic rules, so the same question
+        always searches the same documents and the behaviour can be tested.</dd>
+      <dt>Saying "I don't know"</dt>
+      <dd>When a quarter is not in the corpus, or the model finds no evidence, the app declines and says what it
+        searched, instead of guessing.</dd>
+      <dt>Measured, not claimed</dt>
+      <dd>Four configurations were compared on a held-out test set, used once after all settings were frozen, with an
+        LLM judge checked against human labels. The Evaluation page shows those results and their caveats.</dd>
+      <dt>Plain building blocks</dt>
+      <dd>Java with Spring Boot and Spring AI, PostgreSQL with pgvector, Angular. No agent frameworks; the retrieval
+        SQL is written by hand so every step can be explained.</dd>
+    </dl>
+  </section>
+
+  <section aria-labelledby="limits-title">
+    <h2 id="limits-title" class="section-title">Known limitations</h2>
+    <ul class="limits">
+      <li>It covers only the companies and quarters listed on the Corpus page, and only US filers (10-Q and 10-K).</li>
+      <li>Answers can still be wrong or incomplete. Open the cited sources before relying on any figure.</li>
+      <li>Product names (for example a single app or device) are not mapped to their company, and phrases like "end of
+        last year" are not turned into a quarter, so such questions may search the wrong quarters.</li>
+      <li>Source text is passed to the model as data, but prompt injection hidden in a document cannot be ruled out.</li>
+      <li>Questions are rate limited per visitor and per day to keep the demo's costs down.</li>
+      <li>Not investment advice.</li>
+    </ul>
+  </section>
+
+  <section class="author" aria-labelledby="author-title">
+    <h2 id="author-title" class="section-title">About the author</h2>
+    <p>Built by {{ author.name }}, MSc in Artificial Intelligence, University of Galway.</p>
+    <ul class="links">
+      <li>
+        <a [href]="author.linkedin" target="_blank" rel="noopener noreferrer">
+          LinkedIn<span class="visually-hidden"> profile of {{ author.name }} (opens in a new tab)</span>
+        </a>
+      </li>
+      <li>
+        <a [href]="author.github" target="_blank" rel="noopener noreferrer">
+          Source code on GitHub<span class="visually-hidden"> (opens in a new tab)</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+</article>

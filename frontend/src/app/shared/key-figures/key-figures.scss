@@ -1,0 +1,192 @@
+:host {
+  display: block;
+  --kf-bar: #3d95e0; // validated: OKLCH lightness band and 3:1 contrast on the dark panel (dataviz validator)
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card {
+  padding: 16px 18px;
+  background: var(--el-panel);
+  border: 1px solid var(--el-rule);
+  border-radius: 12px;
+  min-width: 0;
+}
+
+.card-title {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+
+.ticker {
+  font-family: var(--el-mono);
+  color: var(--el-text);
+  margin-right: 6px;
+}
+
+.chart-label {
+  margin: 0 0 4px;
+  font-size: 12px;
+  color: var(--el-muted);
+}
+
+.chart {
+  position: relative;
+  max-width: 520px;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+}
+
+.axis {
+  stroke: var(--el-rule);
+  stroke-width: 1;
+}
+
+.hit {
+  fill: transparent;
+}
+
+.bar {
+  fill: var(--kf-bar);
+}
+
+/* Cited quarter: amber (the "in focus" colour) plus the "cited" tag in the table and the bar's label. */
+.bar.cited {
+  fill: var(--el-amber);
+}
+
+.hatch-line.cited-hatch {
+  stroke: var(--el-amber);
+}
+
+.bar.on {
+  stroke: var(--el-text);
+  stroke-width: 1.5;
+}
+
+.hatch-bg {
+  fill: var(--el-panel-2);
+}
+
+.hatch-line {
+  stroke: var(--kf-bar);
+  stroke-width: 3;
+}
+
+.bar-group {
+  cursor: default;
+  outline: none;
+}
+
+.bar-group:focus-visible .bar {
+  stroke: var(--el-amber);
+  stroke-width: 2;
+}
+
+.value-label {
+  font: 600 12px var(--el-mono);
+  fill: var(--el-text);
+  text-anchor: middle;
+}
+
+.quarter-label {
+  font: 400 11px var(--el-mono);
+  fill: var(--el-muted);
+  text-anchor: middle;
+}
+
+.tooltip {
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 10px));
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  background: var(--el-bg);
+  border: 1px solid var(--el-rule);
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2;
+
+  strong {
+    font-family: var(--el-mono);
+  }
+
+  .muted {
+    color: var(--el-muted);
+  }
+}
+
+.figures {
+  width: 100%;
+  margin-top: 12px;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  th,
+  td {
+    padding: 6px 4px;
+    text-align: left;
+    border-bottom: 1px solid var(--el-rule);
+  }
+
+  thead th {
+    font: 500 11px var(--el-mono);
+    color: var(--el-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  tbody th {
+    font: 500 12px var(--el-mono);
+    white-space: nowrap;
+  }
+
+  tbody tr:last-child > * {
+    border-bottom: 0;
+  }
+
+  .num {
+    text-align: right;
+  }
+}
+
+.derived-tag {
+  margin-left: 4px;
+  padding: 0 5px;
+  border: 1px dashed var(--el-muted);
+  border-radius: 3px;
+  font-size: 10px;
+  color: var(--el-muted);
+}
+
+.cited-tag {
+  margin-left: 4px;
+  padding: 0 5px;
+  border-radius: 3px;
+  background: var(--el-amber);
+  color: var(--el-on-amber);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.cited-row {
+  background: var(--el-amber-soft);
+}
+
+.note {
+  font-size: 13px;
+  color: var(--el-muted);
+  margin: 10px 0 0;
+}

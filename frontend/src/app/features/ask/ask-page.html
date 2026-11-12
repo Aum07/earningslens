@@ -1,0 +1,112 @@
+<section class="ask" [class.home]="isHome()" aria-labelledby="ask-title">
+  @if (isHome()) {
+    <div class="hero">
+      <!-- Display headline, second line in gold (DESIGN.md section 3). -->
+      <h1 id="ask-title" class="display">Ask what companies <span class="gold">actually reported.</span></h1>
+      <p class="body-l">
+        Answers come only from earnings call transcripts, earnings press releases and 10-Q and 10-K filings, and
+        every claim links to the passage it came from.
+      </p>
+    </div>
+  } @else {
+    <h1 id="ask-title" class="visually-hidden">Ask about company earnings</h1>
+  }
+
+  <!-- Search box: question on row 1; scope chips and the one gold button on row 2 (DESIGN.md section 6). -->
+  <div class="search" [class.compact]="!isHome()">
+    <mat-form-field appearance="outline" class="question-field" subscriptSizing="dynamic">
+      <textarea
+        matInput
+        [rows]="isHome() ? 2 : 1"
+        aria-label="Your question"
+        aria-keyshortcuts="Control+Enter"
+        placeholder="Ask about revenue, guidance or what management said..."
+        [formControl]="question"
+        [attr.maxlength]="maxLength"
+        (keydown)="onKeydown($event)"
+      ></textarea>
+    </mat-form-field>
+    <div class="search-row">
+      <div class="scope" role="group" aria-label="Search scope">
+        @for (chip of scopeChips(); track chip.key) {
+          <button type="button" class="chip" [class.selected]="chip.active" [attr.aria-expanded]="filtersOpen()"
+                  aria-controls="filters-panel" (click)="toggleFilters()">
+            <span [class.num]="chip.mono">{{ chip.text }}</span>
+          </button>
+        }
+      </div>
+      <div class="search-actions">
+        <span class="caption hint">
+          @if (tooShort()) {
+            At least {{ minLength }} characters.
+          } @else {
+            <span class="shortcut">Ctrl+Enter to ask</span>
+          }
+          <span class="count num">{{ length() }} / {{ maxLength }}</span>
+        </span>
+        <button matButton="filled" type="button" class="ask-button" [disabled]="!canAsk()" (click)="ask()">Ask ↵</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Until the Filters modal (screen 4): the scope chips open the dropdowns here. -->
+  <div id="filters-panel" class="filters-panel" [hidden]="!filtersOpen()" role="group" aria-labelledby="narrow-title">
+    <h2 id="narrow-title" class="label">Narrow the search (optional)</h2>
+    <div class="filters">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Companies@if (companies().length > 0) { ({{ companies().length }} supported)}</mat-label>
+        <mat-select [formControl]="tickers" multiple>
+          @for (c of companyOptions(); track c.ticker) {
+            <mat-option [value]="c.ticker">
+              <span class="option-name">{{ c.name }} ({{ c.ticker }})</span>
+              <span class="option-range">{{ c.range }}</span>
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Fiscal quarters</mat-label>
+        <mat-select [formControl]="periods" multiple>
+          @for (p of periodOptions(); track p.key) {
+            <mat-option [value]="p.key">{{ p.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Document types</mat-label>
+        <mat-select [formControl]="docTypes" multiple>
+          @for (d of docTypeOptions; track d.value) {
+            <mat-option [value]="d.value">{{ d.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    @if (fiscalNote(); as note) {
+      <p class="info-note">{{ note }} No filter means all of them.</p>
+    }
+  </div>
+  @if (companiesError(); as message) {
+    <p class="caption" role="status">Could not load the filter options: {{ message }} You can still ask without filters.</p>
+  }
+
+  @if (isHome()) {
+    <section class="examples" aria-labelledby="samples-title">
+      <h2 id="samples-title" class="label">Try one of these</h2>
+      <ul class="example-list">
+        @for (s of samples; track s) {
+          <li><button type="button" class="example" (click)="useSample(s)">{{ s }}</button></li>
+        }
+      </ul>
+    </section>
+  }
+
+  @if (loading()) {
+    <app-loading message="Searching the documents and writing an answer. This can take several seconds." />
+  } @else if (error(); as e) {
+    <app-error-panel [error]="e" (retry)="retry()" />
+  } @else if (response(); as r) {
+    <app-answer-panel [response]="r" [keyFigures]="keyFigures()" />
+  }
+</section>

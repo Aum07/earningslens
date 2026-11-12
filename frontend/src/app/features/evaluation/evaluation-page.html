@@ -1,0 +1,159 @@
+<section class="page" aria-labelledby="eval-title">
+  <h1 id="eval-title" class="title">Evaluation</h1>
+
+  @if (error(); as e) {
+    @if (e.kind === 'not-found') {
+      <div class="info" role="status">
+        <h2 class="info-title">No evaluation report yet</h2>
+        <p>{{ e.message }}</p>
+      </div>
+    } @else {
+      <app-error-panel [error]="e" (retry)="load()" />
+    }
+  } @else if (report(); as r) {
+    <p class="intro">
+      Every number on this page comes from the evaluation report <code>eval/reports/latest.json</code>, written by
+      the evaluation runner on {{ r.date }}.
+      @if (counts(); as n) {
+        It covers the <strong>{{ r.split }}</strong> split: {{ n.items }} questions ({{ n.answerable }} answerable,
+        {{ n.unanswerable }} that the documents cannot answer).
+      }
+      The test questions were used once, after all settings were frozen.
+    </p>
+
+    <div class="live" role="status">
+      @if (live(); as l) {
+        The live chat API runs <strong>config {{ l.retrievalMode }}</strong> ({{ descriptions[l.retrievalMode] ?? 'unknown config' }})
+        with {{ l.chatModel }}. Its row is marked "Live" below.
+      } @else if (liveError()) {
+        Could not load which config the live API runs.
+      } @else {
+        Loading the live API settings...
+      }
+    </div>
+
+    <h2 class="section-title">Ablation: one row per configuration</h2>
+    <dl class="configs">
+      @for (name of configNames; track name) {
+        <dt>{{ name }}</dt>
+        <dd>{{ descriptions[name] }}</dd>
+      }
+    </dl>
+
+    @for (g of groups; track g.title) {
+      <h3 class="group-title" [id]="'group-' + $index">{{ g.title }}</h3>
+      <div class="table-wrap">
+        <table class="ablation" [attr.aria-labelledby]="'group-' + $index">
+          <thead>
+            <tr>
+              <th scope="col" class="config-col">Config</th>
+              @for (col of g.columns; track col.header) {
+                <th scope="col" class="num">{{ col.header }}</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (c of r.configs; track c.config) {
+              <tr [class.live-row]="isLive(c)">
+                <th scope="row" class="config-col">
+                  {{ c.config }}
+                  @if (isLive(c)) {
+                    <span class="live-tag">Live</span>
+                  }
+                </th>
+                @for (col of g.columns; track col.header) {
+                  <td class="num">{{ col.cell(c) }}</td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+    @if (totalErrors() > 0) {
+      <p class="note">
+        {{ totalErrors() }} item(s) were left out of a config's numbers because they failed (for example the judge
+        returned an invalid reply twice). See the per-config report files.
+      </p>
+    }
+    <p class="note">Settings: k {{ r.settings.k }}, k per quarter {{ r.settings.kPerPeriod }}, evidence threshold
+      {{ r.settings.minSimilarity }} (config D only), {{ r.settings.chatModel }} for answers,
+      {{ r.settings.embeddingModel }} for search, {{ r.settings.judgeModel }} as the judge.
+      Report files: {{ r.reports.join(', ') }}, {{ r.ablationReport }}.</p>
+
+    <h2 class="section-title">How to read the numbers</h2>
+    <ul class="caveats">
+      <li>
+        <strong>A's higher correctness is not a real win.</strong> A and C were scored on slightly different sets of
+        questions (one of A's items failed). On the questions both were scored on, their correctness is the same
+        (see <code>docs/error-analysis.md</code>).
+      </li>
+      <li>
+        <strong>Recall counts only the exact gold quote.</strong> The same figure is often in a press release, a 10-Q
+        and a transcript, so an answer can be right while recall marks the quote as missed.
+      </li>
+      <li>
+        <strong>The live config was chosen after the test run.</strong> The API used config D before; it was switched
+        to C because D's threshold wrongly declined more answerable test questions. That choice used these test
+        results, so the live row is a slightly optimistic estimate. No setting was re-tuned and nothing was re-run.
+      </li>
+      <li>
+        <strong>Small sample.</strong> One question changes a percentage by several points.
+      </li>
+      <li>
+        <strong>The judge is an LLM.</strong> Its rubric was revised after comparing it with human labels on the same
+        dev answers it is measured on below, so the agreement is optimistic. It is also too generous on multi-quarter
+        answers with shifted quarter labels.
+      </li>
+    </ul>
+
+    <h2 class="section-title">Judge agreement with human labels</h2>
+    <p>
+      {{ r.judgeAgreement.agreement.n }} dev-split answers were labelled by people and by the judge
+      ({{ r.judgeAgreement.report }}).
+    </p>
+    <dl class="agreement">
+      <dt>Faithful yes/no: agreement</dt>
+      <dd>{{ percent(r.judgeAgreement.agreement.faithfulness.agreement) }}</dd>
+      <dt>Faithful yes/no: Cohen's kappa</dt>
+      <dd>{{ fixed2(r.judgeAgreement.agreement.faithfulness.kappa) }}</dd>
+      <dt>Correctness: exact match</dt>
+      <dd>{{ percent(r.judgeAgreement.agreement.correctness.exact) }}</dd>
+      <dt>Correctness: within one point</dt>
+      <dd>{{ percent(r.judgeAgreement.agreement.correctness.withinOne) }}</dd>
+      <dt>Correctness: judge minus human, mean</dt>
+      <dd>{{ fixed2(r.judgeAgreement.agreement.correctness.meanJudgeMinusHuman) }}</dd>
+    </dl>
+    @if (r.judgeAgreement.sameRubric === false) {
+      <p class="note">The test run used a different judge rubric from the one these agreement numbers measured.</p>
+    }
+
+    <h2 class="section-title">Metric definitions</h2>
+    <dl class="definitions">
+      <dt>Recall@k (all / any quote)</dt>
+      <dd>Share of answerable questions where every gold quote (or at least one) is in the retrieved chunks.</dd>
+      <dt>MRR</dt>
+      <dd>Mean of 1 / rank of the first retrieved chunk that contains a gold quote.</dd>
+      <dt>Period coverage</dt>
+      <dd>For multi-quarter questions: share of the required quarters with at least one retrieved chunk.</dd>
+      <dt>Faithfulness / fully faithful</dt>
+      <dd>The judge splits each answer into claims and checks each against the cited sources. Score = supported /
+        total; "fully faithful" = answers with every claim supported.</dd>
+      <dt>Citation precision</dt>
+      <dd>Share of citations whose source actually supports the sentence it is attached to (judge).</dd>
+      <dt>Number grounding</dt>
+      <dd>Share of numbers in answers that appear in the cited sources (automatic check, no judge).</dd>
+      <dt>Correctness</dt>
+      <dd>The judge compares the answer with the reference answer on a 1 to 5 rubric.</dd>
+      <dt>Abstention precision / recall</dt>
+      <dd>Of the questions the system declined, how many really were unanswerable / of the unanswerable questions,
+        how many it declined.</dd>
+      <dt>False abstention</dt>
+      <dd>Share of answerable questions the system wrongly declined.</dd>
+      <dt>Latency, cost</dt>
+      <dd>Time per question (50th and 95th percentile) and model cost per question from token counts.</dd>
+    </dl>
+  } @else {
+    <app-loading message="Loading the evaluation report..." />
+  }
+</section>

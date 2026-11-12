@@ -1,0 +1,16 @@
+<div class="head">
+  <span class="marker">[{{ citation().marker }}]</span>
+  <span class="ticker">{{ citation().ticker }}</span>
+  <span>{{ period() }}</span>
+  <span>{{ docType() }}</span>
+  @if (highlighted()) {
+    <span class="selected-tag">Selected</span>
+  }
+</div>
+@if (location()) {
+  <p class="location">{{ location() }}</p>
+}
+<p class="snippet">{{ snippet() }}</p>
+<a class="open" [href]="citation().sourceUrl" target="_blank" rel="noopener noreferrer">
+  Open source<span class="visually-hidden"> (opens in a new tab)</span>
+</a>

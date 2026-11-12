@@ -1,0 +1,192 @@
+.title {
+  font-size: 40px;
+  line-height: 1.15;
+  margin: 0 0 10px;
+}
+
+.intro {
+  max-width: 80ch;
+  margin: 0 0 20px;
+  color: var(--el-muted);
+  font-size: 16px;
+
+  strong {
+    color: var(--el-text);
+  }
+}
+
+.section-title {
+  font-size: 20px;
+  margin: 40px 0 12px;
+}
+
+/* The live config: amber marks "this is the one in use". */
+.live {
+  max-width: 80ch;
+  padding: 14px 18px;
+  background: var(--el-panel);
+  border: 1px solid var(--el-rule);
+  border-left: 3px solid var(--el-amber);
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.info {
+  max-width: 70ch;
+  padding: 16px 20px;
+  background: var(--el-panel);
+  border: 1px solid var(--el-rule);
+  border-left: 3px solid var(--el-muted);
+  border-radius: 8px;
+}
+
+.info-title {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+
+.configs {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 14px;
+  margin: 0 0 20px;
+  font-size: 14px;
+
+  dt {
+    font-weight: 600;
+  }
+
+  dt {
+    font-family: var(--el-mono);
+  }
+
+  dd {
+    margin: 0;
+    color: var(--el-muted);
+  }
+}
+
+.group-title {
+  font-family: var(--el-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--el-muted);
+  margin: 24px 0 8px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.ablation {
+  border-collapse: collapse;
+  background: var(--el-panel);
+  border: 1px solid var(--el-rule);
+  font-size: 14px;
+
+  th,
+  td {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--el-rule);
+  }
+
+  thead th {
+    font-family: var(--el-mono);
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--el-muted);
+    background: var(--el-panel-2);
+    vertical-align: bottom;
+  }
+
+  .config-col {
+    text-align: left;
+    min-width: 72px;
+  }
+
+  tbody th {
+    font-family: var(--el-mono);
+    font-weight: 600;
+  }
+
+  td.num,
+  th.num {
+    text-align: right;
+    white-space: nowrap;
+    min-width: 96px;
+  }
+
+  tbody tr:last-child > * {
+    border-bottom: 0;
+  }
+}
+
+/* Live row: amber band, tinted row and a "Live" tag (not colour alone). */
+.live-row {
+  background: var(--el-amber-soft);
+
+  th {
+    box-shadow: inset 4px 0 0 var(--el-amber);
+  }
+}
+
+.live-tag {
+  margin-left: 8px;
+  padding: 1px 7px;
+  border-radius: 3px;
+  background: var(--el-amber);
+  color: var(--el-on-amber);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.note {
+  max-width: 100ch;
+  font-size: 13px;
+  color: var(--el-muted);
+}
+
+.caveats {
+  max-width: 80ch;
+  padding-left: 20px;
+
+  li {
+    margin-bottom: 8px;
+  }
+}
+
+.agreement,
+.definitions {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 70ch);
+  gap: 6px 20px;
+  font-size: 14px;
+
+  dt {
+    font-weight: 600;
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+.agreement dd {
+  font-family: var(--el-mono);
+  color: var(--el-text);
+}
+
+@media (max-width: 720px) {
+  .agreement,
+  .definitions {
+    grid-template-columns: minmax(0, 1fr);
+
+    dd {
+      margin-bottom: 8px;
+    }
+  }
+}

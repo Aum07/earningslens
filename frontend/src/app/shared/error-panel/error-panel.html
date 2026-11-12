@@ -1,0 +1,12 @@
+<h2 class="title">{{ title() }}</h2>
+<p class="message">{{ error().message }}</p>
+@if (error().fieldErrors.length > 0) {
+  <ul>
+    @for (f of error().fieldErrors; track f.field + f.message) {
+      <li>{{ f.field }}: {{ f.message }}</li>
+    }
+  </ul>
+}
+@if (error().retryable) {
+  <button matButton="outlined" type="button" (click)="retry.emit()">Try again</button>
+}

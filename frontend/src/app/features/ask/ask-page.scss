@@ -1,0 +1,219 @@
+// Ask page: Home view (hero, search box, examples) and the top of the Answer view. Tokens only (DESIGN.md).
+
+.ask {
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+/* Home column: 780px, centered (DESIGN.md section 5). */
+.ask.home {
+  max-width: 780px;
+  padding-top: 40px;
+}
+
+.hero {
+  margin-bottom: 28px;
+}
+
+/* Display: Geist 600, 50/56, -3% (DESIGN.md section 3). */
+.display {
+  margin: 0 0 14px;
+  font-size: 50px;
+  line-height: 56px;
+  letter-spacing: -0.03em;
+}
+
+.gold {
+  display: block;
+  color: var(--accent);
+}
+
+/* Body L: 17/26. */
+.body-l {
+  margin: 0;
+  font-size: 17px;
+  line-height: 26px;
+  color: var(--text-secondary);
+}
+
+.label {
+  margin: 0 0 10px;
+  font-weight: 400;
+}
+
+.caption {
+  font-size: 12px;
+  line-height: 17px;
+  color: var(--text-tertiary);
+}
+
+/* Search box: --bg-raised, 1px --border-strong, radius 16, padding 18, search glow. */
+.search {
+  padding: 18px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-3xl);
+  box-shadow: var(--glow-search);
+}
+
+.search:focus-within {
+  border-color: var(--accent);
+}
+
+.search.compact {
+  padding: 12px 14px;
+  box-shadow: none;
+}
+
+/* The question field has no box of its own: the search box is its border. */
+.question-field {
+  width: 100%;
+  --mat-form-field-container-text-size: 17px;
+  --mat-form-field-container-text-line-height: 26px;
+  --mat-form-field-outlined-outline-color: transparent;
+  --mat-form-field-outlined-hover-outline-color: transparent;
+  --mat-form-field-outlined-focus-outline-color: transparent;
+  --mat-form-field-container-vertical-padding: 0px;
+
+  textarea {
+    font-family: var(--font-sans);
+    resize: none;
+  }
+
+  textarea::placeholder {
+    color: var(--text-tertiary);
+  }
+}
+
+.search.compact .question-field {
+  --mat-form-field-container-text-size: 15px;
+  --mat-form-field-container-text-line-height: 24px;
+}
+
+.search-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.scope {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* Chip: --bg-hover inside the search box, 12px secondary, padding 5 x 10, radius 8; selected = gold tint + border. */
+.chip {
+  padding: 5px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  font: 400 12px/16px var(--font-sans);
+  cursor: pointer;
+}
+
+.chip:hover {
+  color: var(--text-primary);
+}
+
+.chip.selected {
+  background: var(--accent-08);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.search-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: auto;
+}
+
+.hint {
+  display: flex;
+  gap: 12px;
+}
+
+/* The one gold primary button: weight 600, 14px, radius 8. */
+.ask-button {
+  height: 38px;
+  padding: 0 18px;
+  font: 600 14px/20px var(--font-sans);
+}
+
+/* Interim filters panel (screen 4 replaces it with the Filters modal). */
+.filters-panel {
+  margin-top: 12px;
+  padding: 16px 18px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-3xl);
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  mat-form-field {
+    flex: 1 1 200px;
+  }
+}
+
+/* Info note: blue tint, radius 10 (DESIGN.md section 2 and 4). */
+.info-note {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  background: var(--info-08);
+  border-radius: var(--r-lg);
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 17px;
+}
+
+/* Example cards: radius 12, --bg-surface, 1px --border. */
+.examples {
+  margin-top: 32px;
+}
+
+.example-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.example {
+  width: 100%;
+  height: 100%;
+  padding: 14px 16px;
+  text-align: left;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  color: var(--text-primary);
+  font: 400 13px/20px var(--font-sans);
+  cursor: pointer;
+}
+
+.example:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+}
+
+@media (max-width: 720px) {
+  .display {
+    font-size: 36px;
+    line-height: 42px;
+  }
+
+  .example-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

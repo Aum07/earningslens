@@ -1,0 +1,121 @@
+:host {
+  display: block;
+  margin-top: 32px;
+}
+
+.panel-title {
+  font-family: var(--el-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--el-muted);
+  margin: 0 0 12px;
+}
+
+.answer-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr);
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .answer-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.answer {
+  padding: 20px 24px;
+  background: var(--el-panel);
+  border: 1px solid var(--el-rule);
+  border-radius: 8px;
+}
+
+.answer-text,
+.abstain-text {
+  font-size: 16px;
+  line-height: 1.7;
+  max-width: 72ch;
+  white-space: pre-wrap;
+  margin: 0 0 16px;
+}
+
+.marker {
+  font: 600 12px/1 var(--el-mono);
+  vertical-align: 1px;
+  padding: 3px 5px;
+  margin: 0 1px;
+  border: 1px solid var(--el-rule);
+  border-radius: 3px;
+  background: var(--el-panel-2);
+  color: var(--el-link);
+  cursor: pointer;
+}
+
+.marker:hover {
+  border-color: var(--el-link);
+}
+
+/* Selected source: amber with dark text and an outline (not colour alone). */
+.marker.selected {
+  background: var(--el-amber);
+  color: var(--el-on-amber);
+  border-color: var(--el-text);
+}
+
+.citations {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* Same top padding as the answer box, so "Answer" and "Sources" line up. */
+  padding-top: 21px;
+}
+
+/* Abstention: a calm note, not an error. */
+.abstain {
+  max-width: 72ch;
+  padding: 18px 22px;
+  background: var(--el-panel);
+  border: 1px solid var(--el-rule);
+  border-left: 3px solid var(--el-muted);
+  border-radius: 8px;
+}
+
+.warnings {
+  font-size: 13px;
+  color: var(--el-muted);
+  padding: 10px 0 0;
+  border-top: 1px dashed var(--el-rule);
+
+  ul {
+    margin: 4px 0 0;
+    padding-left: 18px;
+  }
+}
+
+.warnings-title {
+  margin: 0;
+}
+
+.note {
+  font-family: var(--el-mono);
+  font-size: 12px;
+  color: var(--el-muted);
+  margin: 10px 0 0;
+}
+
+.answer-column {
+  min-width: 0;
+}
+
+.sec-figures {
+  margin-top: 24px;
+
+  .note {
+    margin: 0 0 14px;
+    font-family: var(--el-sans);
+    font-size: 13px;
+  }
+}

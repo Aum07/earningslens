@@ -1,0 +1,49 @@
+<section class="page" aria-labelledby="corpus-title">
+  <h1 id="corpus-title" class="title">Corpus</h1>
+  <p class="intro">
+    Answers come only from these documents: press releases, earnings call transcripts and SEC filings (10-Q, 10-K).
+    Quarters are each company's own fiscal quarters.
+  </p>
+
+  @if (error(); as e) {
+    <app-error-panel [error]="e" (retry)="load()" />
+  } @else if (documents(); as docs) {
+    <p class="summary">
+      {{ summary().documents }} documents from {{ summary().companies }} companies, split into
+      {{ summary().chunks | number }} searchable chunks.
+    </p>
+    <div class="table-wrap">
+      <table class="corpus-table">
+        <caption class="visually-hidden">Documents in the corpus, by company and fiscal quarter</caption>
+        <thead>
+          <tr>
+            <th scope="col">Company</th>
+            <th scope="col">Fiscal quarter</th>
+            <th scope="col">Document</th>
+            <th scope="col" class="num">Chunks</th>
+            <th scope="col">Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (d of docs; track d.id) {
+            <tr>
+              <td>{{ d.companyName }} ({{ d.ticker }})</td>
+              <td>{{ period(d) }}</td>
+              <td>{{ docTypeLabels[d.docType] ?? d.docType }}</td>
+              <td class="num">{{ d.chunkCount | number }}</td>
+              <td>
+                <a [href]="d.sourceUrl" target="_blank" rel="noopener noreferrer">
+                  Open<span class="visually-hidden"> {{ d.ticker }} {{ period(d) }} {{ docTypeLabels[d.docType] }} (opens in a new tab)</span>
+                </a>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="5">No documents have been ingested yet.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <app-loading message="Loading the document list..." />
+  }
+</section>

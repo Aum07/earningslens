@@ -1,0 +1,91 @@
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="shell">
+  <aside class="sidebar" aria-label="Sidebar">
+    <a class="wordmark" routerLink="/" aria-label="EarningsLens home"><span>Earnings</span><span class="lens">Lens</span></a>
+
+    <button type="button" class="new-question" (click)="newQuestion()" [attr.aria-keyshortcuts]="'Control+K Meta+K'">
+      <span>+ New question</span>
+      <kbd class="num">{{ shortcut }}</kbd>
+    </button>
+
+    <nav class="nav" aria-label="Main">
+      @for (p of pages; track p.path) {
+        <a
+          class="nav-item"
+          [routerLink]="p.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: p.exact }"
+          ariaCurrentWhenActive="page"
+          >{{ p.label }}</a
+        >
+      }
+    </nav>
+
+    <section class="history" aria-labelledby="history-title">
+      <h2 id="history-title" class="label">This session</h2>
+      @if (session.entries().length === 0) {
+        <p class="caption">Your questions appear here until you reload the page.</p>
+      } @else {
+        <ol class="history-list">
+          @for (h of session.entries(); track h.id) {
+            <li>
+              <button
+                type="button"
+                class="history-item"
+                [class.current]="h.id === session.selectedId()"
+                [attr.aria-current]="h.id === session.selectedId() ? 'true' : null"
+                (click)="openEntry(h.id)"
+              >
+                {{ h.question }}
+                @if (h.response.abstained) {
+                  <span class="history-tag">(no answer)</span>
+                }
+              </button>
+            </li>
+          }
+        </ol>
+      }
+    </section>
+
+    <div class="spacer"></div>
+
+    @if (coverage().length > 0) {
+      <section class="coverage" aria-labelledby="coverage-title">
+        <h2 id="coverage-title" class="label">Coverage</h2>
+        <p class="coverage-caption">Companies and quarters you can ask about</p>
+        <ul>
+          @for (c of coverage(); track c.ticker) {
+            <li><span class="ticker">{{ c.ticker }}</span><span class="num range">{{ c.range }}</span></li>
+          }
+        </ul>
+        @if (coverageHidden() > 0) {
+          <p class="coverage-more">+ <span class="num">{{ coverageHidden() }}</span> more companies</p>
+        }
+        <a class="coverage-link" routerLink="/corpus">See all <span class="num">{{ coverageTotal() }}</span> on Corpus</a>
+      </section>
+    }
+
+    <p class="footnote">
+      <span class="disclaimer-text">Not investment advice. Answers come only from the listed documents.</span>
+      <span class="credit">Built by <a routerLink="/about">Aum Kanakiya</a></span>
+    </p>
+  </aside>
+
+  <div class="main-area">
+    <header class="topbar" role="banner">
+      <span class="topbar-title">{{ pageTitle() }}</span>
+      <p class="status num" role="status">
+        @if (live(); as l) {
+          <span class="dot" aria-hidden="true"></span> API online: config {{ l.retrievalMode }}, {{ l.chatModel }}
+        } @else {
+          <span class="dot off" aria-hidden="true"></span> API offline
+        }
+      </p>
+    </header>
+
+    <main id="main" class="page" tabindex="-1">
+      <router-outlet />
+    </main>
+  </div>
+</div>
