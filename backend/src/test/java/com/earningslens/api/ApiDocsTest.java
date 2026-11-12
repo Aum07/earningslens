@@ -31,7 +31,9 @@ class ApiDocsTest extends PgvectorContainerTest {
                 .andExpect(jsonPath("$.paths['/api/v1/chat'].post").exists())
                 .andExpect(jsonPath("$.paths['/api/v1/documents'].get").exists())
                 .andExpect(jsonPath("$.paths['/api/v1/companies'].get").exists())
-                .andExpect(jsonPath("$.paths['/api/v1/eval/latest'].get").exists());
+                .andExpect(jsonPath("$.paths['/api/v1/eval/latest'].get").exists())
+                .andExpect(jsonPath("$.paths['/api/v1/eval/live-config'].get").exists())
+                .andExpect(jsonPath("$.paths['/api/v1/key-figures'].get").exists());
     }
 
     @Test

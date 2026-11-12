@@ -13,10 +13,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * Rate limit: only POST /api/v1/chat (the call that costs money).
  *
  * @EnableConfigurationProperties: @WebMvcTest slices load this class but not the @ConfigurationPropertiesScan on
- * BackendApplication, so the two settings records are registered here too (the full app skips the duplicate).
+ * BackendApplication, so the settings records the controllers need are registered here too (the full app skips the duplicate).
  */
 @Configuration
-@EnableConfigurationProperties({ApiProperties.class, RateLimitProperties.class})
+@EnableConfigurationProperties({ApiProperties.class, RateLimitProperties.class, RetrievalProperties.class,
+        LlmProperties.class})
 public class WebConfig implements WebMvcConfigurer {
 
     private final ApiProperties api;

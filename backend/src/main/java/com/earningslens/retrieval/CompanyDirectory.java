@@ -67,8 +67,10 @@ public class CompanyDirectory {
             if (m.get("aliases") instanceof List<?> list) {
                 list.forEach(a -> aliases.add(String.valueOf(a)));
             }
+            Object cik = m.get("cik");
             companies.add(new Company(String.valueOf(m.get("ticker")), String.valueOf(m.get("name")),
-                    ((Number) m.get("fiscal-year-end-month")).intValue(), aliases));
+                    ((Number) m.get("fiscal-year-end-month")).intValue(), aliases,
+                    cik == null ? null : String.valueOf(cik)));
         }
         return new CompanyDirectory(companies);
     }

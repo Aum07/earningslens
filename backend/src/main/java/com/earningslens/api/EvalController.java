@@ -1,5 +1,8 @@
 package com.earningslens.api;
 
+import com.earningslens.api.dto.LiveConfigDto;
+import com.earningslens.config.LlmProperties;
+import com.earningslens.config.RetrievalProperties;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -14,16 +17,23 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.databind.JsonNode;
 
-/** GET /api/v1/eval/latest (spec 10, roadmap E4.6): the latest eval report, exactly as the eval runner wrote it. */
+/**
+ * GET /api/v1/eval/latest (spec 10, roadmap E4.6): the latest eval report, exactly as the eval runner wrote it.
+ * GET /api/v1/eval/live-config (E6.5): which ablation config and models the live chat API uses.
+ */
 @RestController
 @RequestMapping("/api/v1/eval")
 @Tag(name = "Evaluation")
 public class EvalController {
 
     private final LatestEvalReport latest;
+    private final RetrievalProperties retrieval;
+    private final LlmProperties llm;
 
-    public EvalController(LatestEvalReport latest) {
+    public EvalController(LatestEvalReport latest, RetrievalProperties retrieval, LlmProperties llm) {
         this.latest = latest;
+        this.retrieval = retrieval;
+        this.llm = llm;
     }
 
     /** 404 until the first full eval run (Phase 5) has written latest.json. */
@@ -45,5 +55,14 @@ public class EvalController {
     public JsonNode latest() {
         return latest.read().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "No evaluation report yet. Run the evaluation to create latest.json."));
+    }
+
+    /** The settings the chat endpoint really uses, so the UI never has to hard-code "config C". */
+    @GetMapping("/live-config")
+    @Operation(summary = "Get the configuration the live chat API runs",
+            description = "The ablation config (A to D, see the evaluation report) and the models used by "
+                    + "POST /api/v1/chat, read from the server's settings.")
+    public LiveConfigDto liveConfig() {
+        return new LiveConfigDto(retrieval.mode().name(), llm.chatModel(), llm.embeddingModel());
     }
 }

@@ -14,8 +14,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/** Roadmap E4.6: GET /api/v1/eval/latest returns the report as written, or 404 before the first eval run. */
-@WebMvcTest(EvalController.class)
+/**
+ * Roadmap E4.6: GET /api/v1/eval/latest returns the report as written, or 404 before the first eval run.
+ * E6.5: GET /api/v1/eval/live-config reports the settings the chat API uses.
+ */
+// The two properties override application.yaml, proving the values come from settings, not from code.
+@WebMvcTest(controllers = EvalController.class,
+        properties = {"earningslens.retrieval.mode=B", "earningslens.llm.chat-model=test-chat-model"})
 class EvalControllerTest {
 
     @Autowired MockMvc mvc;
@@ -40,5 +45,14 @@ class EvalControllerTest {
         when(latest.read()).thenReturn(Optional.empty());
 
         mvc.perform(get("/api/v1/eval/latest")).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void liveConfigReportsTheModeAndModelsFromSettings() throws Exception {
+        mvc.perform(get("/api/v1/eval/live-config"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.retrievalMode").value("B"))
+                .andExpect(jsonPath("$.chatModel").value("test-chat-model"))
+                .andExpect(jsonPath("$.embeddingModel").value("text-embedding-3-small"));
     }
 }
