@@ -161,7 +161,7 @@ class ChatEndToEndTest extends PgvectorContainerTest {
 
         assertThat((Boolean) JsonPath.read(json, "$.abstained")).isFalse();
         assertThat((List<?>) JsonPath.read(json, "$.groundingWarnings")).isEmpty();
-        assertThat((List<?>) JsonPath.read(json, "$.appliedFilters.fiscalPeriods[*].quarter")).containsExactly(2, 3);
+        assertThat((List<Integer>) JsonPath.read(json, "$.appliedFilters.fiscalPeriods[*].quarter")).containsExactly(2, 3);
         assertThat(citations(json)).hasSize(2);
         assertCitationsMatchCitedSentences(json);
 
@@ -193,7 +193,7 @@ class ChatEndToEndTest extends PgvectorContainerTest {
         assertThat((Boolean) JsonPath.read(json, "$.abstained")).isTrue();
         assertThat(citations(json)).isEmpty();
         assertThat((Object) JsonPath.read(json, "$.model")).isNull();
-        assertThat((List<?>) JsonPath.read(json, "$.appliedFilters.fiscalPeriods[*].year")).containsExactly(2025);
+        assertThat((List<Integer>) JsonPath.read(json, "$.appliedFilters.fiscalPeriods[*].year")).containsExactly(2025);
         verify(chatModel, never()).call(any(Prompt.class));
         verify(embeddingModel, never()).call(any(EmbeddingRequest.class));
     }
