@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { DOC_TYPE_LABELS, periodLabel } from '../../core/labels';
 import { Citation } from '../../core/models';
 
@@ -6,9 +6,11 @@ import { Citation } from '../../core/models';
 export const SNIPPET_LENGTH = 300;
 
 /**
- * One cited source (spec section 12: ticker, period, doc type, page or section, speaker, snippet, link).
+ * One cited source as a DESIGN.md source row: gold number box, title (document type) and mono meta (ticker, fiscal
+ * quarter, page or section, speaker), and "View passage", which asks the parent to open the source drawer.
+ * output(): an event the parent listens to, like (viewPassage)="...".
  * input.required(): a value the parent must pass in, read like a signal: citation().
- * The host element gets id "citation-<marker>" so a [n] badge can find, scroll to and focus it.
+ * The host element gets id "citation-<marker>" so a [n] marker can find, scroll to and focus it.
  */
 @Component({
   selector: 'app-citation-card',
@@ -26,20 +28,22 @@ export class CitationCard {
   readonly citation = input.required<Citation>();
   readonly highlighted = input(false);
 
-  readonly period = computed(() =>
-    periodLabel({ year: this.citation().fiscalYear, quarter: this.citation().fiscalQuarter }),
-  );
-  readonly docType = computed(() => DOC_TYPE_LABELS[this.citation().docType] ?? this.citation().docType);
-  /** The backend sends the first SNIPPET_LENGTH characters; "..." shows when the text was cut there. */
-  readonly snippet = computed(() => {
-    const text = this.citation().snippet;
-    return text.length >= SNIPPET_LENGTH ? `${text.trimEnd()}...` : text;
-  });
+  /** "View passage" was pressed: the parent opens the source drawer. */
+  readonly viewPassage = output<void>();
 
-  readonly location = computed(() => {
+  readonly docType = computed(() => DOC_TYPE_LABELS[this.citation().docType] ?? this.citation().docType);
+
+  /** Mono meta line: "META · FY2026 Q3 · Page 7 · Susan Li, CFO". */
+  readonly meta = computed(() => {
     const c = this.citation();
-    return [c.page !== null ? `Page ${c.page}` : null, c.section, c.speaker ? `Speaker: ${c.speaker}` : null]
+    return [
+      c.ticker,
+      periodLabel({ year: c.fiscalYear, quarter: c.fiscalQuarter }),
+      c.page !== null ? `Page ${c.page}` : null,
+      c.section,
+      c.speaker,
+    ]
       .filter((part): part is string => !!part)
-      .join(' | ');
+      .join(' · ');
   });
 }

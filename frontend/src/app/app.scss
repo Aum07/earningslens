@@ -57,6 +57,18 @@
   color: var(--accent);
 }
 
+/* Logo lockup: mark + wordmark, no space between "Earnings" and "Lens" (DESIGN.md section 7). */
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+}
+
+.mark {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px; // clear space: about half the mark's width
+}
+
 /* The one gold primary button in the sidebar. */
 .new-question {
   display: flex;

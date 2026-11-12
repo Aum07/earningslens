@@ -84,6 +84,17 @@ describe('AnswerPanel', () => {
     expect(second.classList).toContain('selected');
   });
 
+  it('"View passage" opens the source drawer with the answer sentence that cites it', async () => {
+    await render(answered);
+    el().querySelector<HTMLButtonElement>('#citation-2 button.view')!.click();
+    await new Promise((r) => setTimeout(r));
+    const drawer = document.querySelector('app-source-drawer')!;
+    expect(drawer.querySelector('#source-drawer-title')?.textContent).toContain('Press release');
+    expect(drawer.querySelector('.supports')?.textContent).toBe('Microsoft Cloud grew.');
+    expect(el().querySelector('#citation-2')!.classList).toContain('highlighted');
+    drawer.querySelector<HTMLButtonElement>('.outline')!.click();
+  });
+
   it('clears the highlight when a new response arrives', async () => {
     await render(answered);
     el().querySelector<HTMLButtonElement>('button.marker')!.click();
@@ -144,7 +155,7 @@ describe('AnswerPanel', () => {
 
     it('shows only the companies the answer cites, with the cited quarter marked', async () => {
       await renderWithFigures(answered); // cites MSFT FY2026 Q2 only
-      const cards = [...el().querySelectorAll('.sec-figures .card')];
+      const cards = [...el().querySelectorAll('.sec-figures .company')];
       expect(cards.length).toBe(1);
       expect(cards[0].textContent).toContain('Microsoft Corporation');
 
@@ -153,9 +164,14 @@ describe('AnswerPanel', () => {
       expect(cited[0].textContent).toContain('FY2026 Q2');
       expect(cited[0].textContent).toContain('cited');
       expect(el().querySelectorAll('.sec-figures .bar.cited').length).toBe(1);
-      expect(el().querySelector('.sec-figures .bar-group')?.getAttribute('aria-label')).toBe(
-        'MSFT FY2026 Q2 revenue $81.3B, cited in the answer',
-      );
+      expect(el().querySelector('.sec-figures .info-note')?.textContent).toContain('MSFT FY2026 Q2 = Oct-Dec 2025');
+    });
+
+    it('puts the figures panel next to the answer, and uses one column without it', async () => {
+      await renderWithFigures(answered);
+      expect(el().querySelector('.layout')?.classList).toContain('with-figures');
+      await render({ ...answered, citations: [citation(1, 'GOOGL')], answer: 'Revenue [1].' });
+      expect(el().querySelector('.layout')?.classList).not.toContain('with-figures');
     });
 
     it('shows no figures for an abstention', async () => {

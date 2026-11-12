@@ -1,0 +1,34 @@
+<!-- Score cards for the live config: progress bar gold at 85% or more, red with a "weaker" pill below (DESIGN.md). -->
+<ul class="cards">
+  @for (card of cards(); track card.label) {
+    <li class="card" [class.weaker]="card.weaker">
+      <div class="card-head">
+        <span class="card-label">{{ card.label }}</span>
+        @if (card.weaker) {
+          <span class="pill-weaker"><span class="dot" aria-hidden="true"></span>weaker</span>
+        }
+      </div>
+      <p class="card-value num">{{ card.value }}</p>
+      @if (card.ratio !== null) {
+        <div class="bar" role="img" [attr.aria-label]="card.label + ' ' + card.value + (card.weaker ? ', below 85%' : '')">
+          <div class="fill" [style.width.%]="card.width"></div>
+        </div>
+      }
+      @if (card.note) {
+        <p class="card-note">{{ card.note }}</p>
+      }
+    </li>
+  }
+</ul>
+
+@if (weaker().length > 0) {
+  <!-- "Where it's weaker" callout: gold tint at 6% with a gold border. -->
+  <aside class="callout" aria-labelledby="weaker-title">
+    <h3 id="weaker-title" class="callout-title">Where it's weaker</h3>
+    <ul>
+      @for (card of weaker(); track card.label) {
+        <li><strong>{{ card.label }} <span class="num">{{ card.value }}</span>:</strong> {{ card.why }}.</li>
+      }
+    </ul>
+  </aside>
+}

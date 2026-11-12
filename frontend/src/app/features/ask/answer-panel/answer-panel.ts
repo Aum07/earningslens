@@ -1,9 +1,11 @@
-import { Component, ElementRef, computed, inject, input, linkedSignal } from '@angular/core';
-import { splitAnswer } from '../../../core/answer-segments';
+import { Dialog } from '@angular/cdk/dialog';
+import { Component, ElementRef, Injector, computed, inject, input, linkedSignal } from '@angular/core';
+import { sentencesCiting, splitAnswer } from '../../../core/answer-segments';
 import { DOC_TYPE_LABELS, periodLabel } from '../../../core/labels';
 import { ChatResponse, KeyFigures } from '../../../core/models';
 import { CitationCard } from '../../../shared/citation-card/citation-card';
 import { KeyFiguresView } from '../../../shared/key-figures/key-figures';
+import { SourceDrawer } from '../../../shared/source-drawer/source-drawer';
 
 /**
  * Shows one chat response (spec section 12): the answer with clickable [n] badges and the citation panel, or a
@@ -19,6 +21,8 @@ import { KeyFiguresView } from '../../../shared/key-figures/key-figures';
 })
 export class AnswerPanel {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly dialog = inject(Dialog);
+  private readonly injector = inject(Injector);
 
   readonly response = input.required<ChatResponse>();
   /** All companies' SEC key figures (null while loading or when they could not be loaded). */
@@ -64,5 +68,16 @@ export class AnswerPanel {
     // scrollIntoView is missing in the test DOM (jsdom), hence the ?.
     card.scrollIntoView?.({ behavior: 'smooth', block: 'nearest' });
     card.focus({ preventScroll: true });
+  }
+
+  /** "View passage" on a source row: the source drawer, with the answer sentences that cite this source. */
+  openSource(marker: number): void {
+    const citation = this.response().citations.find((c) => c.marker === marker);
+    if (!citation) return;
+    this.selected.set(marker);
+    SourceDrawer.open(this.dialog, this.injector, {
+      citation,
+      sentences: sentencesCiting(this.response().answer, marker),
+    });
   }
 }

@@ -13,7 +13,7 @@ export const routes: Routes = [
   },
   {
     path: 'evaluation',
-    title: 'Evaluation | EarningsLens',
+    title: 'Accuracy report | EarningsLens',
     loadComponent: () => import('./features/evaluation/evaluation-page').then((m) => m.EvaluationPage),
   },
   {

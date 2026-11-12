@@ -3,7 +3,6 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { MatSelectHarness } from '@angular/material/select/testing';
 import { MatInputHarness } from '@angular/material/input/testing';
 import { MatButtonHarness } from '@angular/material/button/testing';
 import { environment } from '../../../environments/environment';
@@ -46,53 +45,65 @@ describe('AskPage', () => {
     await fixture.whenStable();
   }
 
-  async function selects(): Promise<MatSelectHarness[]> {
-    return loader.getAllHarnesses(MatSelectHarness);
+  /** Clicks a scope chip in the search box and returns the Filters modal (it opens in an overlay on the page). */
+  async function openFilters(): Promise<HTMLElement> {
+    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('.scope .chip')!.click();
+    await new Promise((r) => setTimeout(r));
+    return document.querySelector('app-filters-modal') as HTMLElement;
   }
 
-  it('fills the filter options from /companies', async () => {
-    await loadCompanies();
-    const [companySelect, periodSelect, docTypeSelect] = await selects();
-
-    await companySelect.open();
-    // Each option shows the company and the quarters held for it.
-    const options = (fixture.nativeElement as HTMLElement).ownerDocument.querySelectorAll('mat-option');
-    expect([...options].map((o) => [o.querySelector('.option-name')?.textContent, o.querySelector('.option-range')?.textContent])).toEqual([
-      ['Microsoft Corporation (MSFT)', 'FY2026 Q2 to FY2027 Q1'],
-      ['Alphabet Inc. (GOOGL)', 'FY2025 Q4 to FY2026 Q2'],
-    ]);
-    await periodSelect.open();
-    // Union of both companies' quarters, oldest first, each once.
-    expect(await Promise.all((await periodSelect.getOptions()).map((o) => o.getText()))).toEqual([
-      'FY2025 Q4',
-      'FY2026 Q2',
-      'FY2027 Q1',
-    ]);
-    await docTypeSelect.open();
-    expect((await docTypeSelect.getOptions()).length).toBe(4);
-
-    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
-    expect(text).toContain('Fiscal year ends: Microsoft Corporation June, Alphabet Inc. December.');
-  });
-
-  it('labels the Companies dropdown with how many companies are supported', async () => {
-    await loadCompanies();
-    expect((fixture.nativeElement as HTMLElement).querySelector('mat-label')?.textContent?.trim()).toBe(
-      'Companies (2 supported)',
+  function chip(modal: HTMLElement, text: string): HTMLButtonElement {
+    const found = [...modal.querySelectorAll<HTMLButtonElement>('[role="checkbox"]')].find((b) =>
+      (b.querySelector('.chip-main') ?? b).textContent?.includes(text),
     );
+    if (!found) throw new Error(`No chip "${text}"`);
+    return found;
+  }
+
+  function button(modal: HTMLElement, text: string): HTMLButtonElement {
+    return [...modal.querySelectorAll<HTMLButtonElement>('footer button, header button')].find((b) => b.textContent?.includes(text))!;
+  }
+
+  const chipTexts = () =>
+    [...(fixture.nativeElement as HTMLElement).querySelectorAll('.scope .chip')].map((c) => c.textContent?.trim());
+
+  it('opens the Filters modal from a scope chip, with the options from /companies', async () => {
+    await loadCompanies();
+    const modal = await openFilters();
+    expect(document.querySelector('[role="dialog"]')?.getAttribute('aria-labelledby')).toBe('filters-title');
+
+    const options = (group: string) =>
+      [...modal.querySelectorAll(`[aria-labelledby="${group}"] [role="checkbox"]`)].map((b) => b.textContent?.replace(/\s+/g, ' ').trim());
+    expect(modal.querySelector('#f-companies')?.textContent?.trim()).toBe('Companies (2 supported)');
+    expect(options('f-companies')).toEqual([
+      'MSFT Microsoft Corporation, FY2026 Q2 to FY2027 Q1',
+      'GOOGL Alphabet Inc., FY2025 Q4 to FY2026 Q2',
+    ]);
+    // Union of both companies' quarters, oldest first, each with every company's calendar months.
+    expect(options('f-quarters')).toEqual([
+      'FY2025 Q4, GOOGL Oct-Dec 2025',
+      'FY2026 Q2, MSFT Oct-Dec 2025 · GOOGL Apr-Jun 2026',
+      'FY2027 Q1, MSFT Jul-Sep 2026',
+    ]);
+    expect(options('f-docs').length).toBe(4);
+    expect(modal.textContent).toContain('Fiscal year ends in June: Microsoft Corporation. December: Alphabet Inc.');
+    button(modal, 'Cancel').click();
   });
 
-  it('sends the selected filters and the trimmed question in the request body', async () => {
+  it('sends the filters applied in the modal and the trimmed question in the request body', async () => {
     await loadCompanies();
-    const [companySelect, periodSelect, docTypeSelect] = await selects();
-    await companySelect.open();
-    await companySelect.clickOptions({ text: /Microsoft Corporation \(MSFT\)/ });
-    await periodSelect.open();
-    await periodSelect.clickOptions({ text: 'FY2026 Q2' });
-    await docTypeSelect.open();
-    await docTypeSelect.clickOptions({ text: 'Earnings call transcript' });
-    await (await loader.getHarness(MatInputHarness)).setValue('  How did Azure grow?  ');
+    const modal = await openFilters();
+    chip(modal, 'Microsoft Corporation').click();
+    chip(modal, 'FY2026 Q2').click();
+    chip(modal, 'Earnings call transcript').click();
+    await new Promise((r) => setTimeout(r));
+    expect(chip(modal, 'Microsoft Corporation').getAttribute('aria-checked')).toBe('true');
+    expect(button(modal, 'Apply').textContent?.trim()).toBe('Apply · 3 filters');
+    button(modal, 'Apply').click();
+    await fixture.whenStable();
+    expect(chipTexts()).toEqual(['MSFT', 'FY2026 Q2', 'Earnings call transcript']);
 
+    await (await loader.getHarness(MatInputHarness)).setValue('  How did Azure grow?  ');
     await (await loader.getHarness(MatButtonHarness.with({ text: 'Ask ↵' }))).click();
 
     const req = http.expectOne(`${base}/chat`);
@@ -102,6 +113,15 @@ describe('AskPage', () => {
       filters: { tickers: ['MSFT'], fiscalPeriods: [{ year: 2026, quarter: 2 }], docTypes: ['TRANSCRIPT'] },
     });
     req.flush({ answer: 'ok', abstained: false, citations: [], groundingWarnings: [], appliedFilters: {}, latencyMs: 1, model: null });
+  });
+
+  it('Cancel in the modal changes nothing', async () => {
+    await loadCompanies();
+    const modal = await openFilters();
+    chip(modal, 'Alphabet Inc.').click();
+    button(modal, 'Cancel').click();
+    await fixture.whenStable();
+    expect(chipTexts()).toEqual(['All companies', 'All quarters', 'All documents']);
   });
 
   it('sends no filters object when nothing is selected', async () => {
@@ -152,8 +172,11 @@ describe('AskPage', () => {
     http.expectOne(`${base}/companies`).flush(null, { status: 503, statusText: 'Service Unavailable' });
     http.expectOne(`${base}/key-figures`).flush(null, { status: 503, statusText: 'Service Unavailable' });
     await fixture.whenStable();
-    expect((fixture.nativeElement as HTMLElement).querySelector('mat-label')?.textContent?.trim()).toBe('Companies');
     expect((fixture.nativeElement as HTMLElement).textContent).toContain('You can still ask without filters.');
+    const modal = await openFilters();
+    expect(modal.querySelector('#f-companies')?.textContent?.trim()).toBe('Companies');
+    expect(modal.textContent).toContain('Could not load the companies');
+    button(modal, 'Cancel').click();
   });
 
   describe('answer, errors and history (E6.4)', () => {

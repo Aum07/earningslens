@@ -1,5 +1,5 @@
 <section class="page" aria-labelledby="eval-title">
-  <h1 id="eval-title" class="title">Evaluation</h1>
+  <h1 id="eval-title" class="title">Accuracy report</h1>
 
   @if (error(); as e) {
     @if (e.kind === 'not-found') {
@@ -31,6 +31,11 @@
         Loading the live API settings...
       }
     </div>
+
+    @if (liveRow(); as row) {
+      <h2 class="section-title">How config {{ row.config }} scored</h2>
+      <app-score-cards [cards]="cards()" />
+    }
 
     <h2 class="section-title">Ablation: one row per configuration</h2>
     <dl class="configs">

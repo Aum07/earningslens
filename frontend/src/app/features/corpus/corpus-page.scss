@@ -1,61 +1,136 @@
+// Corpus page (DESIGN.md, restyled with the Accuracy report's patterns). Tokens only.
+
+.page {
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+/* H1: 30/36, 600, -2%. */
 .title {
-  font-size: 40px;
-  line-height: 1.15;
   margin: 0 0 10px;
+  font-size: 30px;
+  line-height: 36px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 .intro {
-  max-width: 72ch;
+  max-width: 80ch;
   margin: 0 0 8px;
-  color: var(--el-muted);
-  font-size: 16px;
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--text-secondary);
 }
 
 .summary {
   margin: 0 0 20px;
-  font-family: var(--el-mono);
   font-size: 13px;
-  color: var(--el-text);
+  line-height: 20px;
+  color: var(--text-tertiary);
+}
+
+.search-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  margin-bottom: 12px;
+}
+
+/* Input: --bg-raised, 1px --border-strong, radius 8; gold border while typing. */
+.search-input {
+  box-sizing: border-box;
+  flex: 0 1 360px;
+  min-width: 220px;
+  padding: 9px 12px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-md);
+  color: var(--text-primary);
+  font: 400 13px/20px var(--font-sans);
+}
+
+.search-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.caption {
+  margin: 0;
+  font-size: 12px;
+  line-height: 17px;
+  color: var(--text-tertiary);
 }
 
 .table-wrap {
   overflow-x: auto;
-  background: var(--el-panel);
-  border: 1px solid var(--el-rule);
-  border-radius: 8px;
+  padding: 6px 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-3xl);
 }
 
 .corpus-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 13px;
+  line-height: 20px;
 
   th,
   td {
+    padding: 10px;
     text-align: left;
-    padding: 9px 14px;
-    border-bottom: 1px solid var(--el-rule);
+    border-bottom: 1px solid var(--border);
   }
 
+  /* Header: the Label style. */
   thead th {
-    font-family: var(--el-mono);
-    font-size: 11px;
-    font-weight: 500;
+    font: 400 11px/14px var(--font-mono);
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--el-muted);
-    background: var(--el-panel-2);
+    color: var(--text-tertiary);
   }
 
-  tbody tr:last-child td {
+  tbody tr:last-child > * {
     border-bottom: 0;
   }
 
-  tbody tr:hover {
-    background: var(--el-panel-2);
+  tbody tr:hover > * {
+    background: var(--bg-raised);
   }
 
   .num {
     text-align: right;
+    white-space: nowrap;
+  }
+
+  /* Numbers, tickers and quarters are data: Geist Mono. */
+  .num,
+  .mono,
+  .ticker {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ticker {
+    color: var(--text-secondary);
+  }
+
+  a {
+    color: var(--text-secondary);
+  }
+
+  a:hover {
+    color: var(--text-primary); // gold is only for what was asked, citations and the primary action
+  }
+
+  .empty {
+    padding: 20px 10px;
+    color: var(--text-tertiary);
   }
 }

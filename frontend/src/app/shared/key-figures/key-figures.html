@@ -1,115 +1,100 @@
-<div class="grid">
-  @for (chart of charts(); track chart.company.ticker) {
-    <section class="card" [attr.aria-labelledby]="'kf-' + chart.company.ticker">
-      <h3 class="card-title" [id]="'kf-' + chart.company.ticker">
-        <span class="ticker">{{ chart.company.ticker }}</span> {{ chart.company.name }}
-      </h3>
-
-      @if (!chart.company.available) {
-        <p class="note" role="status">The SEC figures could not be loaded right now. Try again later.</p>
-      } @else if (chart.bars.length === 0) {
-        <p class="note">No SEC figures for the quarters in the corpus yet.</p>
-      } @else {
-        <p class="chart-label">Revenue by fiscal quarter</p>
-        <div class="chart">
-          <svg [attr.viewBox]="'0 0 ' + width + ' ' + height" role="group" [attr.aria-label]="chart.company.ticker + ' revenue by fiscal quarter'">
-            <defs>
-              <!-- Hatch for derived fourth quarters: texture, so "derived" is never shown by colour alone. -->
-              <pattern [attr.id]="'hatch-' + chart.company.ticker" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-                <rect width="6" height="6" class="hatch-bg" />
-                <line x1="0" y1="0" x2="0" y2="6" class="hatch-line" />
-              </pattern>
-              <pattern [attr.id]="'hatch-cited-' + chart.company.ticker" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-                <rect width="6" height="6" class="hatch-bg" />
-                <line x1="0" y1="0" x2="0" y2="6" class="hatch-line cited-hatch" />
-              </pattern>
-            </defs>
-            <line x1="0" [attr.y1]="baseline" [attr.x2]="width" [attr.y2]="baseline" class="axis" />
-            @for (bar of chart.bars; track bar.key) {
-              <g
-                class="bar-group"
-                tabindex="0"
-                role="img"
-                [attr.aria-label]="bar.aria"
-                (mouseenter)="active.set(bar.key)"
-                (mouseleave)="active.set(null)"
-                (focus)="active.set(bar.key)"
-                (blur)="active.set(null)"
-              >
-                <!-- Hit target larger than the bar -->
-                <rect [attr.x]="bar.x - 8" y="0" [attr.width]="bar.width + 16" [attr.height]="baseline" class="hit" />
-                <path [attr.d]="bar.path" class="bar" [class.derived]="bar.derived" [class.cited]="bar.cited" [class.on]="active() === bar.key"
-                      [attr.fill]="bar.derived ? 'url(#hatch-' + (bar.cited ? 'cited-' : '') + chart.company.ticker + ')' : null" />
-                @if (bar.labelled) {
-                  <text [attr.x]="bar.x + bar.width / 2" [attr.y]="bar.y - 8" class="value-label">{{ bar.value }}</text>
-                }
-                <text [attr.x]="bar.x + bar.width / 2" [attr.y]="height - 8" class="quarter-label">{{ bar.label }}</text>
-              </g>
-            }
-          </svg>
-          @for (bar of chart.bars; track bar.key) {
-            @if (active() === bar.key) {
-              <div class="tooltip" [style.left]="tipLeft(bar)" [style.top]="tipTop(bar)" aria-hidden="true">
-                <strong>{{ bar.label }}</strong>
-                <span>Revenue {{ bar.value }}</span>
-                <span>Net income {{ usdCompact(bar.q.netIncome) }}</span>
-                @if (bar.derived) {
-                  <span class="muted">Derived: full year minus nine months</span>
-                }
-                @if (bar.cited) {
-                  <span class="muted">Cited in the answer</span>
-                }
-              </div>
-            }
-          }
-        </div>
-
-        <table class="figures">
-          <caption class="visually-hidden">{{ chart.company.name }} key figures by fiscal quarter</caption>
-          <thead>
-            <tr>
-              <th scope="col">Quarter</th>
-              <th scope="col" class="num">Revenue</th>
-              <th scope="col" class="num">Net income</th>
-              <th scope="col" class="num">Diluted EPS</th>
-              <th scope="col">Filing</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (bar of chart.bars; track bar.key) {
-              <tr [class.cited-row]="bar.cited">
-                <th scope="row">
-                  {{ bar.label }}
-                  @if (bar.derived) {
-                    <span class="derived-tag">derived</span>
-                  }
-                  @if (bar.cited) {
-                    <span class="cited-tag">cited</span>
-                  }
-                </th>
-                <td class="num">{{ usdCompact(bar.q.revenue) }}</td>
-                <td class="num">{{ usdCompact(bar.q.netIncome) }}</td>
-                <td class="num">{{ usd2(bar.q.epsDiluted) }}</td>
-                <td>
-                  @if (bar.q.filingUrl) {
-                    <a [href]="bar.q.filingUrl" target="_blank" rel="noopener noreferrer">
-                      {{ bar.q.form }}<span class="visually-hidden"> filed {{ bar.q.filed }} (opens in a new tab)</span>
-                    </a>
-                  } @else {
-                    {{ bar.q.form }}
-                  }
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      }
-    </section>
+<!-- Segmented control: --bg-canvas track, active tab --bg-raised (DESIGN.md section 6). -->
+<div class="tabs" role="group" aria-label="Figure shown in the chart">
+  @for (m of metrics; track m.key) {
+    <button type="button" class="tab" [class.active]="metric() === m.key" [attr.aria-pressed]="metric() === m.key" (click)="metric.set(m.key)">
+      {{ m.label }}
+    </button>
   }
 </div>
+
+@for (c of companies(); track c.company.ticker) {
+  <section class="company" [attr.aria-labelledby]="'kf-' + c.company.ticker">
+    <h4 class="company-title" [id]="'kf-' + c.company.ticker">
+      <span class="ticker-chip ticker">{{ c.company.ticker }}</span>
+      <span class="company-name">{{ c.company.name }}</span>
+    </h4>
+
+    @if (!c.company.available) {
+      <p class="caption" role="status">The SEC figures could not be loaded right now. Try again later.</p>
+    } @else if (c.rows.length === 0) {
+      <p class="caption">No SEC figures for the quarters in the corpus yet.</p>
+    } @else {
+      <!-- The table below carries the same numbers for screen readers, so the drawing is hidden from them. -->
+      <svg class="chart" [attr.viewBox]="'0 0 ' + width + ' ' + height" aria-hidden="true">
+        <defs>
+          <!-- Hatch marks derived fourth quarters by texture, not colour alone. -->
+          <pattern [attr.id]="'hatch-' + c.company.ticker" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="6" height="6" class="hatch-bg" />
+            <line x1="0" y1="0" x2="0" y2="6" class="hatch-line" />
+          </pattern>
+          <pattern [attr.id]="'hatch-cited-' + c.company.ticker" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="6" height="6" class="hatch-bg" />
+            <line x1="0" y1="0" x2="0" y2="6" class="hatch-line cited" />
+          </pattern>
+        </defs>
+        <line x1="0" [attr.y1]="baseline" [attr.x2]="width" [attr.y2]="baseline" class="axis" />
+        @for (bar of c.bars; track bar.key) {
+          <g class="bar-group" [class.cited]="bar.cited">
+            @if (bar.path) {
+              <path [attr.d]="bar.path" class="bar" [class.cited]="bar.cited" [class.derived]="bar.derived"
+                    [attr.fill]="bar.derived ? 'url(#hatch-' + (bar.cited ? 'cited-' : '') + c.company.ticker + ')' : null" />
+            }
+            <text [attr.x]="bar.x + bar.width / 2" [attr.y]="bar.y - 6" class="value-label">{{ bar.value }}</text>
+            <text [attr.x]="bar.x + bar.width / 2" [attr.y]="height - 6" class="quarter-label">{{ bar.label }}</text>
+          </g>
+        }
+      </svg>
+
+      <table class="figures">
+        <caption class="visually-hidden">{{ c.company.name }} official figures by fiscal quarter</caption>
+        <thead>
+          <tr>
+            <th scope="col">Quarter</th>
+            <th scope="col" class="num">Revenue</th>
+            <th scope="col" class="num">Net inc.</th>
+            <th scope="col" class="num">EPS</th>
+            <th scope="col" class="num">Filing</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of c.rows; track r.key) {
+            <tr [class.cited-row]="r.cited">
+              <th scope="row">
+                <span class="quarter">{{ r.label }}@if (r.derived) {<span class="derived-mark" aria-hidden="true">*</span>}</span>
+                <span class="visually-hidden">, </span><span class="months">{{ r.months }}</span>
+                @if (r.derived) {
+                  <span class="visually-hidden">, derived</span>
+                }
+                @if (r.cited) {
+                  <span class="visually-hidden">, cited in the answer</span>
+                }
+              </th>
+              <td class="num">{{ usdCompact(r.q.revenue) }}</td>
+              <td class="num">{{ usdCompact(r.q.netIncome) }}</td>
+              <td class="num">{{ usd2(r.q.epsDiluted) }}</td>
+              <td class="num">
+                @if (r.q.filingUrl) {
+                  <a [href]="r.q.filingUrl" target="_blank" rel="noopener noreferrer">
+                    {{ r.q.form }}<span class="visually-hidden"> filed {{ r.q.filed }} (opens in a new tab)</span>
+                  </a>
+                } @else {
+                  {{ r.q.form }}
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <!-- Blue info note: fiscal quarter with its calendar months (DESIGN.md content rules). -->
+      <p class="info-note">Fiscal quarters follow each company's own year: {{ c.calendarNote }}.</p>
+    }
+  </section>
+}
+
 @if (anyDerived()) {
-  <p class="note">
-    Derived: 10-K annual reports give the fourth quarter only as part of the full year, so Q4 revenue and net income
+  <p class="caption footnote">
+    * Derived: 10-K annual reports give the fourth quarter only as part of the full year, so Q4 revenue and net income
     are the full year minus the first nine months, both as filed. EPS cannot be derived that way and shows n/a.
   </p>
 }

@@ -71,4 +71,39 @@ describe('CorpusPage', () => {
     await fixture.whenStable();
     expect(el().querySelectorAll('tbody tr').length).toBe(3);
   });
+
+  describe('company search', () => {
+    async function search(text: string): Promise<void> {
+      const input = el().querySelector<HTMLInputElement>('input[type="search"]')!;
+      input.value = text;
+      input.dispatchEvent(new Event('input'));
+      await fixture.whenStable();
+    }
+    const companies = () => [...el().querySelectorAll('tbody tr td:first-child')].map((td) => td.textContent?.trim());
+
+    beforeEach(async () => {
+      http.expectOne(url).flush(docs);
+      await fixture.whenStable();
+    });
+
+    it('filters the table by ticker or company name, in any case', async () => {
+      await search('meta');
+      expect(companies()).toEqual(['Meta Platforms, Inc. (META)']);
+      expect(el().querySelector('[role="status"]')?.textContent?.trim()).toBe('1 of 3 documents');
+
+      await search('  Microsoft ');
+      expect(companies().length).toBe(2);
+
+      await search('MSF');
+      expect(companies().length).toBe(2);
+    });
+
+    it('says when no company matches, and shows everything again when cleared', async () => {
+      await search('apple');
+      expect(el().querySelector('tbody .empty')?.textContent?.trim()).toBe('No company matches "apple".');
+      await search('');
+      expect(companies().length).toBe(3);
+      expect(el().querySelector('[role="status"]')?.textContent?.trim()).toBe('3 documents');
+    });
+  });
 });

@@ -29,8 +29,8 @@
     <div class="search-row">
       <div class="scope" role="group" aria-label="Search scope">
         @for (chip of scopeChips(); track chip.key) {
-          <button type="button" class="chip" [class.selected]="chip.active" [attr.aria-expanded]="filtersOpen()"
-                  aria-controls="filters-panel" (click)="toggleFilters()">
+          <button type="button" class="chip" [class.selected]="chip.active" aria-haspopup="dialog"
+                  [attr.aria-label]="chip.text + ', change filters'" (click)="openFilters()">
             <span [class.num]="chip.mono">{{ chip.text }}</span>
           </button>
         }
@@ -49,44 +49,6 @@
     </div>
   </div>
 
-  <!-- Until the Filters modal (screen 4): the scope chips open the dropdowns here. -->
-  <div id="filters-panel" class="filters-panel" [hidden]="!filtersOpen()" role="group" aria-labelledby="narrow-title">
-    <h2 id="narrow-title" class="label">Narrow the search (optional)</h2>
-    <div class="filters">
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>Companies@if (companies().length > 0) { ({{ companies().length }} supported)}</mat-label>
-        <mat-select [formControl]="tickers" multiple>
-          @for (c of companyOptions(); track c.ticker) {
-            <mat-option [value]="c.ticker">
-              <span class="option-name">{{ c.name }} ({{ c.ticker }})</span>
-              <span class="option-range">{{ c.range }}</span>
-            </mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>Fiscal quarters</mat-label>
-        <mat-select [formControl]="periods" multiple>
-          @for (p of periodOptions(); track p.key) {
-            <mat-option [value]="p.key">{{ p.label }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>Document types</mat-label>
-        <mat-select [formControl]="docTypes" multiple>
-          @for (d of docTypeOptions; track d.value) {
-            <mat-option [value]="d.value">{{ d.label }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    </div>
-    @if (fiscalNote(); as note) {
-      <p class="info-note">{{ note }} No filter means all of them.</p>
-    }
-  </div>
   @if (companiesError(); as message) {
     <p class="caption" role="status">Could not load the filter options: {{ message }} You can still ask without filters.</p>
   }
@@ -107,6 +69,10 @@
   } @else if (error(); as e) {
     <app-error-panel [error]="e" (retry)="retry()" />
   } @else if (response(); as r) {
+    <!-- H2: the question this answer is for (DESIGN.md section 3). -->
+    @if (shownQuestion(); as q) {
+      <h2 class="question">{{ q }}</h2>
+    }
     <app-answer-panel [response]="r" [keyFigures]="keyFigures()" />
   }
 </section>

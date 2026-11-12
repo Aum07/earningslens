@@ -7,7 +7,10 @@ import { ApiError, CorpusDocument } from '../../core/models';
 import { ErrorPanel } from '../../shared/error-panel/error-panel';
 import { Loading } from '../../shared/loading/loading';
 
-/** Corpus page (spec section 12, page 2): every document by company and quarter, from GET /api/v1/documents. */
+/**
+ * Corpus page (spec section 12, page 2): every document by company and quarter, from GET /api/v1/documents.
+ * A search box filters the table by ticker or company name (Aum's request, for when many companies are added).
+ */
 @Component({
   selector: 'app-corpus-page',
   imports: [DecimalPipe, ErrorPanel, Loading],
@@ -32,6 +35,16 @@ export class CorpusPage {
   });
 
   readonly docTypeLabels = DOC_TYPE_LABELS;
+
+  /** The search box text. */
+  readonly query = signal('');
+
+  /** Documents whose ticker or company name contains the search text (any case), in the API's order. */
+  readonly shown = computed(() => {
+    const docs = this.documents() ?? [];
+    const q = this.query().trim().toLowerCase();
+    return q ? docs.filter((d) => d.ticker.toLowerCase().includes(q) || d.companyName.toLowerCase().includes(q)) : docs;
+  });
 
   constructor() {
     this.load();

@@ -1,21 +1,26 @@
+// Error panel: a failure is a mismatch with what was asked, so the red tint (DESIGN.md section 2). Tokens only.
 :host {
   display: block;
   max-width: 72ch;
   margin: 24px 0;
   padding: 16px 20px;
-  background: rgba(255, 122, 122, 0.08);
-  border: 1px solid rgba(255, 122, 122, 0.4);
-  border-left: 3px solid var(--el-error);
-  border-radius: 8px;
-  color: var(--el-text);
+  background: var(--down-14);
+  border-radius: var(--r-lg);
+  color: var(--text-primary);
 }
 
+/* H3 style: 16/22, 600, in --down. */
 .title {
   margin: 0 0 4px;
-  font-size: 17px;
-  color: var(--el-error);
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 600;
+  color: var(--down);
 }
 
 .message {
   margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--text-secondary);
 }

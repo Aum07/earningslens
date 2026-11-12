@@ -1,155 +1,160 @@
+// Official-figures panel content (DESIGN.md section 6). Tokens only.
+
 :host {
   display: block;
-  --kf-bar: #3d95e0; // validated: OKLCH lightness band and 3:1 contrast on the dark panel (dataviz validator)
 }
 
-.grid {
+/* Segmented control: --bg-canvas track (radius 10), active tab --bg-raised (radius 8). */
+.tabs {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  gap: 2px;
+  padding: 3px;
+  background: var(--bg-canvas);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
 }
 
-.card {
-  padding: 16px 18px;
-  background: var(--el-panel);
-  border: 1px solid var(--el-rule);
-  border-radius: 12px;
-  min-width: 0;
+.tab {
+  flex: 1;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--text-secondary);
+  font: 500 13px/20px var(--font-sans);
+  cursor: pointer;
 }
 
-.card-title {
-  margin: 0 0 10px;
+.tab:hover {
+  color: var(--text-primary);
+}
+
+.tab.active {
+  background: var(--bg-raised);
+  color: var(--text-primary);
+}
+
+.company {
+  padding-top: 18px;
+}
+
+.company + .company {
+  margin-top: 18px;
+  border-top: 1px solid var(--border);
+}
+
+/* H3 style for panel sub-titles: 16/22, 600. */
+.company-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
   font-size: 16px;
+  line-height: 22px;
+  font-weight: 600;
 }
 
-.ticker {
-  font-family: var(--el-mono);
-  color: var(--el-text);
-  margin-right: 6px;
-}
-
-.chart-label {
-  margin: 0 0 4px;
+/* Ticker chip: --bg-raised, radius 6, Data style. */
+.ticker-chip {
+  padding: 2px 8px;
+  background: var(--bg-raised);
+  border-radius: var(--r-sm);
   font-size: 12px;
-  color: var(--el-muted);
+  line-height: 16px;
+  font-weight: 500;
+}
+
+.company-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .chart {
-  position: relative;
-  max-width: 520px;
-
-  svg {
-    display: block;
-    width: 100%;
-    height: auto;
-    overflow: visible;
-  }
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
 }
 
 .axis {
-  stroke: var(--el-rule);
+  stroke: var(--border);
   stroke-width: 1;
 }
 
-.hit {
-  fill: transparent;
-}
-
+/* Inactive bars --border-strong; the asked-about quarter --accent. */
 .bar {
-  fill: var(--kf-bar);
+  fill: var(--border-strong);
 }
 
-/* Cited quarter: amber (the "in focus" colour) plus the "cited" tag in the table and the bar's label. */
 .bar.cited {
-  fill: var(--el-amber);
-}
-
-.hatch-line.cited-hatch {
-  stroke: var(--el-amber);
-}
-
-.bar.on {
-  stroke: var(--el-text);
-  stroke-width: 1.5;
+  fill: var(--accent);
 }
 
 .hatch-bg {
-  fill: var(--el-panel-2);
+  fill: var(--bg-surface);
 }
 
 .hatch-line {
-  stroke: var(--kf-bar);
+  stroke: var(--border-strong);
   stroke-width: 3;
 }
 
-.bar-group {
-  cursor: default;
-  outline: none;
+.hatch-line.cited {
+  stroke: var(--accent);
 }
 
-.bar-group:focus-visible .bar {
-  stroke: var(--el-amber);
-  stroke-width: 2;
-}
-
+/* Value labels above, quarter labels below: mono 10-11px. */
 .value-label {
-  font: 600 12px var(--el-mono);
-  fill: var(--el-text);
+  font: 500 11px var(--font-mono);
+  fill: var(--text-secondary);
   text-anchor: middle;
 }
 
 .quarter-label {
-  font: 400 11px var(--el-mono);
-  fill: var(--el-muted);
+  font: 400 10px var(--font-mono);
+  fill: var(--text-tertiary);
   text-anchor: middle;
 }
 
-.tooltip {
-  position: absolute;
-  transform: translate(-50%, calc(-100% - 10px));
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px 10px;
-  background: var(--el-bg);
-  border: 1px solid var(--el-rule);
-  border-radius: 6px;
-  font-size: 12px;
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 2;
-
-  strong {
-    font-family: var(--el-mono);
-  }
-
-  .muted {
-    color: var(--el-muted);
-  }
+.bar-group.cited .value-label {
+  fill: var(--accent);
 }
 
+.bar-group.cited .quarter-label {
+  fill: var(--text-primary);
+}
+
+/* Table: mono 12px; the highlighted row gets the gold tint and a 1px gold border. */
 .figures {
   width: 100%;
-  margin-top: 12px;
-  border-collapse: collapse;
-  font-size: 13px;
+  margin-top: 14px;
+  border-collapse: separate;
+  border-spacing: 0;
+  font: 400 12px/16px var(--font-mono);
+  font-variant-numeric: tabular-nums;
 
   th,
   td {
-    padding: 6px 4px;
+    padding: 7px 6px;
     text-align: left;
-    border-bottom: 1px solid var(--el-rule);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
   }
 
   thead th {
-    font: 500 11px var(--el-mono);
-    color: var(--el-muted);
+    padding-top: 0;
+    font-size: 11px;
+    line-height: 14px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    color: var(--text-tertiary);
   }
 
   tbody th {
-    font: 500 12px var(--el-mono);
+    font-weight: 500;
     white-space: nowrap;
   }
 
@@ -159,34 +164,74 @@
 
   .num {
     text-align: right;
+    white-space: nowrap;
+  }
+
+  a {
+    color: var(--text-secondary);
+  }
+
+  a:hover {
+    color: var(--text-primary);
   }
 }
 
-.derived-tag {
-  margin-left: 4px;
-  padding: 0 5px;
-  border: 1px dashed var(--el-muted);
-  border-radius: 3px;
-  font-size: 10px;
-  color: var(--el-muted);
+.quarter {
+  display: block;
+  color: var(--text-primary);
 }
 
-.cited-tag {
-  margin-left: 4px;
-  padding: 0 5px;
-  border-radius: 3px;
-  background: var(--el-amber);
-  color: var(--el-on-amber);
-  font-size: 10px;
-  font-weight: 600;
+.months {
+  display: block;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 14px;
+  color: var(--text-tertiary);
 }
 
-.cited-row {
-  background: var(--el-amber-soft);
+.derived-mark {
+  margin-left: 2px;
+  color: var(--text-tertiary);
 }
 
-.note {
-  font-size: 13px;
-  color: var(--el-muted);
-  margin: 10px 0 0;
+.cited-row > * {
+  background: var(--accent-10);
+  border-top: 1px solid var(--accent);
+  border-bottom: 1px solid var(--accent);
+}
+
+.cited-row > :first-child {
+  border-left: 1px solid var(--accent);
+  border-radius: var(--r-sm) 0 0 var(--r-sm);
+}
+
+.cited-row > :last-child {
+  border-right: 1px solid var(--accent);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+}
+
+.cited-row .months {
+  color: var(--text-secondary);
+}
+
+/* Info note: blue tint, radius 10. */
+.info-note {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  background: var(--info-08);
+  border-radius: var(--r-lg);
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 17px;
+}
+
+.caption {
+  margin: 0;
+  font-size: 12px;
+  line-height: 17px;
+  color: var(--text-tertiary);
+}
+
+.footnote {
+  margin-top: 14px;
 }

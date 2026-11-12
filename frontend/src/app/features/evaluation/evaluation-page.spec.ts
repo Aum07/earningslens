@@ -122,6 +122,38 @@ describe('EvaluationPage', () => {
     expect(text()).toContain('the agreement is optimistic');
   });
 
+  it('shows score cards for the live config, with the 85% rule and a "Where it\'s weaker" callout', async () => {
+    await load('C');
+    expect(el().textContent).toContain('How config C scored');
+    const cards = [...el().querySelectorAll('.card')].map((c) => ({
+      label: c.querySelector('.card-label')?.textContent?.trim(),
+      value: c.querySelector('.card-value')?.textContent?.trim(),
+      weaker: c.classList.contains('weaker'),
+      bar: c.querySelector('.fill')?.getAttribute('style') ?? null,
+    }));
+    expect(cards).toEqual([
+      { label: 'Recall@k (all quotes)', value: '0.79', weaker: true, bar: 'width: 78.9%;' },
+      { label: 'Faithfulness', value: '0.88', weaker: false, bar: 'width: 87.6%;' },
+      { label: 'Citation precision', value: '33%', weaker: true, bar: 'width: 33.3%;' },
+      { label: 'Number grounding', value: 'n/a', weaker: false, bar: null }, // missing: no bar, never 0
+      { label: 'Correctness', value: 'n/a', weaker: false, bar: null },
+      { label: 'Abstention precision', value: '75%', weaker: true, bar: 'width: 75%;' },
+      { label: 'Abstention recall', value: '100%', weaker: false, bar: 'width: 100%;' },
+      { label: 'False abstention', value: '11%', weaker: false, bar: null }, // lower is better: no bar
+    ]);
+    expect(el().querySelectorAll('.card .pill-weaker').length).toBe(3);
+    const callout = [...el().querySelectorAll('.callout li')].map((li) => li.textContent?.replace(/\s+/g, ' ').trim());
+    expect(callout.length).toBe(3);
+    expect(callout[0]).toContain('Recall@k (all quotes) 0.79: counts only the exact gold quote');
+  });
+
+  it('scores the live config\'s own row: config A when the API runs A', async () => {
+    await load('A');
+    expect(el().textContent).toContain('How config A scored');
+    expect(el().querySelector('.card-value')?.textContent?.trim()).toBe('0.12');
+    expect([...el().querySelectorAll('.card')][4].querySelector('.card-value')?.textContent?.trim()).toBe('3.46');
+  });
+
   it('shows a neutral notice when no report exists yet', async () => {
     http.expectOne(`${base}/latest`).flush(
       { status: 404, detail: 'No evaluation report yet. Run the evaluation to create latest.json.' },
@@ -140,6 +172,7 @@ describe('EvaluationPage', () => {
     await fixture.whenStable();
     expect(el().querySelectorAll('tbody tr').length).toBe(6);
     expect(el().querySelectorAll('tr.live-row').length).toBe(0);
+    expect(el().querySelector('.cards')).toBeNull(); // no live config known: no score cards
     expect(text()).toContain('Could not load which config the live API runs.');
   });
 });

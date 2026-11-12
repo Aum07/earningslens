@@ -23,23 +23,6 @@
   --accent-06:rgba(248,198,48,.06); // "Where it's weaker" callout
   --scrim-drawer:rgba(11,11,12,.60);
   --scrim-modal:rgba(11,11,12,.72);
-
-  // TEMPORARY (restyle in progress): the previous design's names point at the new tokens, so screens not yet
-  // restyled already use the new palette. Removed once every screen uses the tokens above directly.
-  --el-bg: var(--bg-canvas);
-  --el-panel: var(--bg-surface);
-  --el-panel-2: var(--bg-raised);
-  --el-rule: var(--border);
-  --el-text: var(--text-primary);
-  --el-muted: var(--text-secondary);
-  --el-link: var(--accent);
-  --el-amber: var(--accent);
-  --el-on-amber: var(--on-accent);
-  --el-amber-soft: var(--accent-10);
-  --el-green: var(--up);
-  --el-error: var(--down);
-  --el-sans: var(--font-sans);
-  --el-mono: var(--font-mono);
 }
 
 // ---- Angular Material: its system variables mapped onto the tokens (DESIGN.md wins, no per-component fights) ----
@@ -127,14 +110,6 @@ code {
 .label { font-size: 11px; line-height: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-tertiary); }
 .cite  { font-size: 13px; font-weight: 500; color: var(--accent); }
 
-// Older screens still use .mono-label; same look as .label until they are restyled.
-.mono-label {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
 // Form fields: inputs sit on --bg-raised with a --border-strong outline (DESIGN.md section 4: inputs).
 .mat-mdc-form-field .mdc-text-field--outlined {
   background: var(--bg-raised);
@@ -195,4 +170,20 @@ th.num {
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
+}
+
+// Source drawer (restyle screen 3): CDK Dialog scrim and a full-height panel on the right.
+.drawer-scrim {
+  background: var(--scrim-drawer);
+}
+
+// Filters modal (restyle screen 4): CDK Dialog scrim; the dialog is centered by default.
+.modal-scrim {
+  background: var(--scrim-modal);
+}
+
+// The CDK Dialog wrapper takes focus for a moment when a drawer or modal opens; its edge is not a control, so no
+// focus ring there. Chips and buttons inside keep their own focus ring.
+.cdk-dialog-container:focus {
+  outline: none;
 }

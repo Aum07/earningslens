@@ -1,16 +1,16 @@
 @if (response().abstained) {
-  <section class="abstain" role="status" aria-labelledby="abstain-title">
-    <h2 id="abstain-title" class="panel-title">No answer from the documents</h2>
-    <p class="abstain-text">{{ response().answer }}</p>
+  <!-- No answer: a calm card, and no figures panel (DESIGN.md content rules). -->
+  <section class="card abstain" role="status" aria-labelledby="abstain-title">
+    <h3 id="abstain-title" class="label">No answer from the documents</h3>
+    <p class="body-text">{{ response().answer }}</p>
   </section>
 } @else {
-  <div class="answer-layout">
-    <!-- Left column: the answer, then the SEC figures for the cited companies (never pushed down by sources). -->
-    <div class="answer-column">
-    <section class="answer" aria-labelledby="answer-title">
-      <h2 id="answer-title" class="panel-title">Answer</h2>
+  <div class="layout" [class.with-figures]="citedFigures().length > 0">
+    <!-- Answer card: ANSWER label, paragraphs with gold [n] markers, divider, SOURCES rows (DESIGN.md section 6). -->
+    <section class="card answer" aria-labelledby="answer-title">
+      <h3 id="answer-title" class="label">Answer</h3>
       <!-- One line on purpose: spaces between the tags would show up inside the answer text. -->
-      <p class="answer-text">@for (seg of segments(); track $index) {@if (seg.kind === 'text') {@if (seg.bold) {<strong>{{ seg.text }}</strong>} @else {<span>{{ seg.text }}</span>}} @else {<button type="button" class="marker" [class.selected]="selected() === seg.marker" [attr.aria-label]="markerLabel(seg.marker)" [attr.aria-controls]="'citation-' + seg.marker" (click)="select(seg.marker)">[{{ seg.marker }}]</button>}}</p>
+      <p class="answer-text body-text">@for (seg of segments(); track $index) {@if (seg.kind === 'text') {@if (seg.bold) {<strong>{{ seg.text }}</strong>} @else {<span>{{ seg.text }}</span>}} @else {<button type="button" class="marker cite" [class.selected]="selected() === seg.marker" [attr.aria-label]="markerLabel(seg.marker)" [attr.aria-controls]="'citation-' + seg.marker" (click)="select(seg.marker)">[{{ seg.marker }}]</button>}}</p>
 
       @if (response().groundingWarnings.length > 0) {
         <div class="warnings" role="note">
@@ -22,32 +22,32 @@
           </ul>
         </div>
       }
-      <p class="note">
+      <p class="meta num">
         @if (response().model) {
-          {{ response().model }},
+          {{ response().model }} ·
         }
         {{ seconds() }} s
       </p>
-    </section>
-      @if (citedFigures().length > 0) {
-        <section class="sec-figures" aria-labelledby="sec-figures-title">
-          <h2 id="sec-figures-title" class="panel-title">Official figures from SEC filings</h2>
-          <p class="note">
-            Revenue, net income and diluted EPS as filed with the SEC, for the companies this answer cites. Quarters the
-            answer cites are marked. Use these to check the numbers above.
-          </p>
-          <app-key-figures [figures]="citedFigures()" [cited]="citedQuarters()" />
-        </section>
-      }
-    </div>
 
-    <aside class="citations" aria-labelledby="sources-title">
-      <h2 id="sources-title" class="panel-title">Sources ({{ response().citations.length }})</h2>
-      @for (c of response().citations; track c.marker) {
-        <app-citation-card [citation]="c" [highlighted]="selected() === c.marker" />
-      } @empty {
-        <p class="note">No sources were cited.</p>
-      }
-    </aside>
+      <hr class="divider" />
+
+      <h3 id="sources-title" class="label">Sources ({{ response().citations.length }})</h3>
+      <div class="sources">
+        @for (c of response().citations; track c.marker) {
+          <app-citation-card [citation]="c" [highlighted]="selected() === c.marker" (viewPassage)="openSource(c.marker)" />
+        } @empty {
+          <p class="caption">No sources were cited.</p>
+        }
+      </div>
+    </section>
+
+    @if (citedFigures().length > 0) {
+      <!-- Official-figures panel: 420px fixed, right of the answer (DESIGN.md section 5). -->
+      <aside class="card figures-panel sec-figures" aria-labelledby="sec-figures-title">
+        <h3 id="sec-figures-title" class="panel-title">Official figures</h3>
+        <p class="caption intro">As filed with the SEC, for the companies this answer cites. Use them to check the numbers.</p>
+        <app-key-figures [figures]="citedFigures()" [cited]="citedQuarters()" />
+      </aside>
+    }
   </div>
 }

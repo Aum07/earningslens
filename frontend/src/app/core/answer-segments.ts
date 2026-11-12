@@ -37,3 +37,18 @@ function splitMarkers(text: string, bold: boolean, cited: ReadonlySet<number>, o
   }
   if (last < text.length) out.push({ kind: 'text', text: text.slice(last), bold });
 }
+
+/**
+ * The answer sentences that cite source `marker`, as plain text (markers and ** removed), for the source drawer's
+ * "Supports this sentence". A sentence ends at ".", "!" or "?" followed by a space or a line break; a marker written
+ * after the full stop ("... billion. [3]") belongs to the sentence before it.
+ */
+export function sentencesCiting(answer: string, marker: number): string[] {
+  const tag = `[${marker}]`;
+  return answer
+    .replace(/([.!?])((?:\s*\[\d{1,3}\])+)/g, '$2$1') // move trailing markers inside the sentence
+    .split(/(?<=[.!?])\s+|\n+/)
+    .filter((s) => s.includes(tag))
+    .map((s) => s.replace(/\s*\[\d{1,3}\]/g, '').replace(/\*\*/g, '').trim())
+    .filter((s) => s.length > 0);
+}

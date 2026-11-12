@@ -1,0 +1,48 @@
+<header class="head">
+  <div class="head-text">
+    <p class="label">Source</p>
+    <h2 id="source-drawer-title" class="title">
+      <span class="number cite" aria-label="Source {{ c.marker }}:">{{ c.marker }}</span>
+      <span>{{ docType }}</span>
+    </h2>
+  </div>
+  <button type="button" class="icon-button" aria-label="Close" (click)="close()">✕</button>
+</header>
+
+<!-- Doc-meta box: key/value rows in mono, radius 12. -->
+<dl class="doc-meta">
+  @for (row of meta(); track row.key) {
+    <div class="meta-row">
+      <dt>{{ row.key }}</dt>
+      <dd class="num">{{ row.value }}</dd>
+    </div>
+  }
+</dl>
+
+<section aria-labelledby="passage-title">
+  <h3 id="passage-title" class="label">Passage</h3>
+  <blockquote class="passage">{{ snippet }}</blockquote>
+  <p class="caption">
+    @if (cut) {
+      The first 300 characters of the passage the answer used. The full text is in the original document.
+    } @else {
+      The passage the answer used.
+    }
+  </p>
+</section>
+
+@if (data.sentences.length > 0) {
+  <section aria-labelledby="supports-title">
+    <h3 id="supports-title" class="label">Supports this sentence</h3>
+    @for (s of data.sentences; track $index) {
+      <p class="supports">{{ s }}</p>
+    }
+  </section>
+}
+
+<footer class="actions">
+  <a class="accent-outline" [href]="c.sourceUrl" target="_blank" rel="noopener noreferrer">
+    Open original document ↗<span class="visually-hidden"> (opens in a new tab)</span>
+  </a>
+  <button type="button" class="outline" (click)="close()">Close</button>
+</footer>

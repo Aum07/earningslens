@@ -1,20 +1,19 @@
+import { Dialog } from '@angular/cdk/dialog';
 import { Component, DestroyRef, ElementRef, computed, effect, inject, signal, untracked } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { ApiService } from '../../core/api.service';
 import { HistoryEntry, SessionHistory } from '../../core/session-history';
-import { DOC_TYPE_LABELS, monthName, parsePeriodKey, periodKey, periodLabel } from '../../core/labels';
+import { DOC_TYPE_LABELS, parsePeriodKey, periodLabel } from '../../core/labels';
 import {
   ApiError,
   ChatRequest,
   ChatResponse,
   Company,
   KeyFigures,
-  DOC_TYPES,
   DocType,
   QUESTION_MAX_LENGTH,
   QUESTION_MIN_LENGTH,
@@ -23,12 +22,8 @@ import { Loading } from '../../shared/loading/loading';
 import { ErrorPanel } from '../../shared/error-panel/error-panel';
 import { AnswerPanel } from './answer-panel/answer-panel';
 import { buildChatRequest } from './chat-request';
+import { FiltersModal } from './filters-modal/filters-modal';
 import { SAMPLE_QUESTIONS } from './sample-questions';
-
-interface PeriodOption {
-  key: string;
-  label: string;
-}
 
 export type { HistoryEntry } from '../../core/session-history';
 
@@ -46,7 +41,6 @@ export type { HistoryEntry } from '../../core/session-history';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
     AnswerPanel,
     ErrorPanel,
     Loading,
@@ -59,9 +53,9 @@ export class AskPage {
   private readonly session = inject(SessionHistory);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly dialog = inject(Dialog);
 
   readonly samples = SAMPLE_QUESTIONS;
-  readonly docTypeOptions = DOC_TYPES.map((value) => ({ value, label: DOC_TYPE_LABELS[value] }));
   readonly minLength = QUESTION_MIN_LENGTH;
   readonly maxLength = QUESTION_MAX_LENGTH;
 
@@ -75,8 +69,6 @@ export class AskPage {
   /** Official SEC figures for all companies, loaded once; the answer panel picks the cited ones. */
   readonly keyFigures = signal<KeyFigures[] | null>(null);
   readonly companiesError = signal<string | null>(null);
-  /** The filter dropdowns' panel (opened from the scope chips until the Filters modal exists). */
-  readonly filtersOpen = signal(false);
   readonly loading = signal(false);
   /** The answer on screen: the selected session entry (set after a question, or picked in the sidebar). */
   readonly response = computed<ChatResponse | null>(() => this.session.selected()?.response ?? null);
@@ -101,68 +93,46 @@ export class AskPage {
     return trimmed >= QUESTION_MIN_LENGTH && this.length() <= QUESTION_MAX_LENGTH && !this.loading();
   });
 
-  /** Every quarter held for any company, oldest first. Each company's own fiscal calendar (see fiscalNote). */
-  readonly periodOptions = computed<PeriodOption[]>(() => {
-    const byKey = new Map<string, PeriodOption & { sort: number }>();
-    for (const company of this.companies()) {
-      for (const p of company.periods) {
-        byKey.set(periodKey(p), { key: periodKey(p), label: periodLabel(p), sort: p.year * 10 + p.quarter });
-      }
-    }
-    return [...byKey.values()].sort((a, b) => a.sort - b.sort).map(({ key, label }) => ({ key, label }));
-  });
-
-  /**
-   * The Companies dropdown: every supported company with the quarters held, from /companies (not typed in), so the
-   * dropdown also tells users what is covered. Periods arrive oldest first.
-   */
-  readonly companyOptions = computed(() =>
-    this.companies().map((c) => ({
-      ticker: c.ticker,
-      name: c.name,
-      range: c.periods.length
-        ? `${periodLabel(c.periods[0])} to ${periodLabel(c.periods[c.periods.length - 1])}`
-        : 'no quarters yet',
-    })),
-  );
-
   private readonly selectedPeriods = toSignal(this.periods.valueChanges, { initialValue: this.periods.value });
   private readonly selectedDocTypes = toSignal(this.docTypes.valueChanges, { initialValue: this.docTypes.value });
   private readonly selectedTickerList = toSignal(this.tickers.valueChanges, { initialValue: this.tickers.value });
 
-  /** Row 2 of the search box: what the next question will search, as chips (gold when narrowed). */
+  /** Row 2 of the search box: what the next question will search, as chips (gold when narrowed). Long picks are
+   *  counted ("15 companies") so the chips stay one line when many companies are supported. */
   readonly scopeChips = computed(() => {
     const t = this.selectedTickerList();
     const p = this.selectedPeriods();
     const d = this.selectedDocTypes();
     return [
-      { key: 'companies', text: t.length ? t.join(', ') : 'All companies', active: t.length > 0, mono: t.length > 0 },
+      { key: 'companies', text: t.length === 0 ? 'All companies' : t.length > 3 ? `${t.length} companies` : t.join(', '), active: t.length > 0, mono: t.length > 0 && t.length <= 3 },
       {
         key: 'quarters',
-        text: p.length ? p.map((k) => periodLabel(parsePeriodKey(k))).join(', ') : 'All quarters',
+        text: p.length === 0 ? 'All quarters' : p.length > 3 ? `${p.length} quarters` : p.map((k) => periodLabel(parsePeriodKey(k))).join(', '),
         active: p.length > 0,
-        mono: p.length > 0,
+        mono: p.length > 0 && p.length <= 3,
       },
       {
         key: 'docs',
-        text: d.length ? d.map((x) => DOC_TYPE_LABELS[x]).join(', ') : 'All documents',
+        text: d.length === 0 ? 'All documents' : d.length > 2 ? `${d.length} document types` : d.map((x) => DOC_TYPE_LABELS[x]).join(', '),
         active: d.length > 0,
         mono: false,
       },
     ];
   });
 
-  toggleFilters(): void {
-    this.filtersOpen.update((open) => !open);
+  /** A scope chip opens the Filters modal; Apply copies its choices into the form fields, Cancel changes nothing. */
+  openFilters(): void {
+    FiltersModal.open(this.dialog, {
+      companies: this.companies(),
+      companiesError: this.companiesError(),
+      current: { tickers: this.tickers.value, periods: this.periods.value, docTypes: this.docTypes.value },
+    }).closed.subscribe((result) => {
+      if (!result) return;
+      this.tickers.setValue(result.tickers);
+      this.periods.setValue(result.periods);
+      this.docTypes.setValue(result.docTypes);
+    });
   }
-
-  /** Explains that quarters are fiscal, using fiscalYearEndMonth from /companies (not hard-coded). */
-  readonly fiscalNote = computed(() => {
-    const parts = this.companies().map((c) => `${c.name} ${monthName(c.fiscalYearEndMonth)}`);
-    return parts.length === 0
-      ? null
-      : `Quarters are each company's own fiscal quarters. Fiscal year ends: ${parts.join(', ')}.`;
-  });
 
   constructor() {
     effect(() => {

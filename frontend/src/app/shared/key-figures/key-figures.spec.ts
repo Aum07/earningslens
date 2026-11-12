@@ -16,6 +16,7 @@ describe('KeyFiguresView', () => {
 
   let fixture: ComponentFixture<KeyFiguresView>;
   const el = () => fixture.nativeElement as HTMLElement;
+  const text = (e: Element | null | undefined) => e?.textContent?.replace(/\s+/g, ' ').trim();
 
   async function render(cited: ReadonlySet<string> = new Set()): Promise<void> {
     fixture = TestBed.createComponent(KeyFiguresView);
@@ -24,42 +25,52 @@ describe('KeyFiguresView', () => {
     await fixture.whenStable();
   }
 
-  it('shows a chart and a table per company, and marks derived quarters', async () => {
+  it('shows a table per company with calendar months, and marks derived quarters', async () => {
     await render();
-    const cards = [...el().querySelectorAll('.card')];
-    expect(cards.length).toBe(2);
-    const rows = [...cards[0].querySelectorAll('tbody tr')].map((r) =>
-      [...r.querySelectorAll('th, td')].slice(0, 4).map((c) => c.textContent?.replace(/\s+/g, ' ').trim()),
+    const companies = [...el().querySelectorAll('.company')];
+    expect(companies.length).toBe(2);
+    const rows = [...companies[0].querySelectorAll('tbody tr')].map((r) =>
+      [...r.querySelectorAll('th, td')].slice(0, 4).map((c) => text(c)),
     );
     expect(rows).toEqual([
-      ['FY2026 Q3', '$82.9B', '$31.8B', '$4.27'],
-      ['FY2026 Q4 derived', '$90.0B', '$35.8B', 'n/a'],
+      ['FY2026 Q3, Jan-Mar 2026', '$82.9B', '$31.8B', '$4.27'],
+      ['FY2026 Q4*, Apr-Jun 2026, derived', '$90.0B', '$35.8B', 'n/a'],
     ]);
-    const bars = [...cards[0].querySelectorAll('.bar-group')];
-    expect(bars.map((b) => b.getAttribute('aria-label'))).toEqual([
-      'MSFT FY2026 Q3 revenue $82.9B',
-      'MSFT FY2026 Q4 revenue $90.0B, derived from the annual report',
-    ]);
-    expect(bars.every((b) => b.getAttribute('tabindex') === '0')).toBe(true);
-    expect(cards[0].querySelectorAll('.bar.derived').length).toBe(1);
+    expect(companies[0].querySelectorAll('.bar.derived').length).toBe(1);
     expect(el().textContent).toContain('EPS cannot be derived that way');
-    expect(cards[1].textContent).toContain('could not be loaded right now');
+    expect(companies[1].textContent).toContain('could not be loaded right now');
   });
 
-  it('labels the latest bar when nothing is cited, and the cited bar when one is', async () => {
+  it('labels every bar, and switches the chart between revenue, net income and EPS', async () => {
     await render();
-    expect([...el().querySelectorAll('.value-label')].map((t) => t.textContent)).toEqual(['$90.0B']);
+    const labels = () => [...el().querySelectorAll('.value-label')].map((t) => t.textContent);
+    expect(labels()).toEqual(['$82.9B', '$90.0B']);
+    expect([...el().querySelectorAll('.quarter-label')].map((t) => t.textContent)).toEqual(['Q3 FY26', 'Q4 FY26']);
+
+    const tabs = [...el().querySelectorAll<HTMLButtonElement>('.tab')];
+    expect(tabs.map((t) => text(t))).toEqual(['Revenue', 'Net income', 'EPS']);
+    expect(tabs[0].getAttribute('aria-pressed')).toBe('true');
+
+    tabs[1].click();
+    await fixture.whenStable();
+    expect(labels()).toEqual(['$31.8B', '$35.8B']);
+    expect(tabs[1].getAttribute('aria-pressed')).toBe('true');
+
+    tabs[2].click();
+    await fixture.whenStable();
+    expect(labels()).toEqual(['$4.27', 'n/a']); // derived Q4 has no EPS, so no bar
+    expect(el().querySelectorAll('.company')[0].querySelectorAll('.bar').length).toBe(1);
+  });
+
+  it('marks the cited quarter in gold, in the table, and in the calendar note', async () => {
+    await render();
+    expect(text(el().querySelector('.info-note'))).toContain('MSFT FY2026 Q4 = Apr-Jun 2026'); // latest, nothing cited
 
     await render(new Set(['MSFT:2026-3']));
-    expect([...el().querySelectorAll('.value-label')].map((t) => t.textContent)).toEqual(['$82.9B']);
-    expect(el().querySelector('tr.cited-row th')?.textContent).toContain('cited');
-  });
-
-  it('shows a tooltip while a bar has keyboard focus', async () => {
-    await render();
-    el().querySelector('.bar-group')!.dispatchEvent(new Event('focus'));
-    await fixture.whenStable();
-    const lines = [...el().querySelectorAll('.tooltip > *')].map((e) => e.textContent?.trim());
-    expect(lines).toEqual(['FY2026 Q3', 'Revenue $82.9B', 'Net income $31.8B']);
+    expect(el().querySelectorAll('.bar.cited').length).toBe(1);
+    const row = el().querySelector('tr.cited-row th');
+    expect(text(row)).toContain('FY2026 Q3');
+    expect(text(row)).toContain('cited in the answer');
+    expect(text(el().querySelector('.info-note'))).toContain('MSFT FY2026 Q3 = Jan-Mar 2026');
   });
 });

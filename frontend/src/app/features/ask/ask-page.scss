@@ -145,36 +145,6 @@
   font: 600 14px/20px var(--font-sans);
 }
 
-/* Interim filters panel (screen 4 replaces it with the Filters modal). */
-.filters-panel {
-  margin-top: 12px;
-  padding: 16px 18px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-3xl);
-}
-
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-
-  mat-form-field {
-    flex: 1 1 200px;
-  }
-}
-
-/* Info note: blue tint, radius 10 (DESIGN.md section 2 and 4). */
-.info-note {
-  margin: 12px 0 0;
-  padding: 10px 12px;
-  background: var(--info-08);
-  border-radius: var(--r-lg);
-  color: var(--text-secondary);
-  font-size: 12px;
-  line-height: 17px;
-}
-
 /* Example cards: radius 12, --bg-surface, 1px --border. */
 .examples {
   margin-top: 32px;
@@ -216,4 +186,14 @@
   .example-list {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+/* Answer view heading: H2, Geist 600, 28/34, -2% (DESIGN.md section 3). */
+.question {
+  margin: 32px 0 0;
+  font-size: 28px;
+  line-height: 34px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
 }

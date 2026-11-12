@@ -1,192 +1,248 @@
+// Accuracy report (DESIGN.md sections 3, 4 and 6, restyle screen 5). Tokens only.
+
+.page {
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+/* H1: 30/36, 600, -2%. */
 .title {
-  font-size: 40px;
-  line-height: 1.15;
   margin: 0 0 10px;
+  font-size: 30px;
+  line-height: 36px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 .intro {
   max-width: 80ch;
   margin: 0 0 20px;
-  color: var(--el-muted);
-  font-size: 16px;
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--text-secondary);
 
   strong {
-    color: var(--el-text);
+    color: var(--text-primary);
+    font-weight: 500;
   }
 }
 
-.section-title {
-  font-size: 20px;
-  margin: 40px 0 12px;
+code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-primary);
 }
 
-/* The live config: amber marks "this is the one in use". */
+.section-title {
+  margin: 40px 0 14px;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 600;
+}
+
+/* Live config: a quiet card; the "Live" pill and row tint carry the gold. */
 .live {
   max-width: 80ch;
-  padding: 14px 18px;
-  background: var(--el-panel);
-  border: 1px solid var(--el-rule);
-  border-left: 3px solid var(--el-amber);
-  border-radius: 8px;
-  font-size: 15px;
+  padding: 12px 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--text-secondary);
+
+  strong {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
 }
 
 .info {
   max-width: 70ch;
   padding: 16px 20px;
-  background: var(--el-panel);
-  border: 1px solid var(--el-rule);
-  border-left: 3px solid var(--el-muted);
-  border-radius: 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-3xl);
 }
 
 .info-title {
   margin: 0 0 4px;
-  font-size: 18px;
+  font-size: 16px;
+  line-height: 22px;
 }
 
 .configs {
   display: grid;
   grid-template-columns: max-content 1fr;
-  gap: 4px 14px;
+  gap: 6px 14px;
   margin: 0 0 20px;
-  font-size: 14px;
+  font-size: 13px;
+  line-height: 20px;
 
   dt {
-    font-weight: 600;
-  }
-
-  dt {
-    font-family: var(--el-mono);
+    font: 500 12px/20px var(--font-mono);
+    color: var(--text-primary);
   }
 
   dd {
     margin: 0;
-    color: var(--el-muted);
+    color: var(--text-secondary);
   }
 }
 
+/* Group titles use the Label style. */
 .group-title {
-  font-family: var(--el-mono);
-  font-size: 12px;
-  font-weight: 500;
+  margin: 24px 0 8px;
+  font: 400 11px/14px var(--font-mono);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--el-muted);
-  margin: 24px 0 8px;
+  color: var(--text-tertiary);
 }
 
 .table-wrap {
   overflow-x: auto;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-3xl);
+  padding: 6px 10px;
 }
 
+/* Table: mono 12px values; header in the Label style. */
 .ablation {
-  border-collapse: collapse;
-  background: var(--el-panel);
-  border: 1px solid var(--el-rule);
-  font-size: 14px;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font: 400 12px/16px var(--font-mono);
+  font-variant-numeric: tabular-nums;
 
   th,
   td {
-    padding: 8px 14px;
-    border-bottom: 1px solid var(--el-rule);
+    padding: 10px 10px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
   }
 
   thead th {
-    font-family: var(--el-mono);
-    font-weight: 500;
     font-size: 11px;
-    letter-spacing: 0.04em;
+    line-height: 14px;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--el-muted);
-    background: var(--el-panel-2);
+    font-weight: 400;
+    color: var(--text-tertiary);
     vertical-align: bottom;
-  }
-
-  .config-col {
-    text-align: left;
-    min-width: 72px;
-  }
-
-  tbody th {
-    font-family: var(--el-mono);
-    font-weight: 600;
-  }
-
-  td.num,
-  th.num {
-    text-align: right;
-    white-space: nowrap;
-    min-width: 96px;
   }
 
   tbody tr:last-child > * {
     border-bottom: 0;
   }
-}
 
-/* Live row: amber band, tinted row and a "Live" tag (not colour alone). */
-.live-row {
-  background: var(--el-amber-soft);
+  .num {
+    text-align: right;
+    white-space: nowrap;
+  }
 
-  th {
-    box-shadow: inset 4px 0 0 var(--el-amber);
+  .config-col {
+    width: 90px;
+    white-space: nowrap;
+    font-weight: 500;
   }
 }
 
+/* The live config's row: highlighted table row = gold tint + 1px gold border. */
+.live-row > * {
+  background: var(--accent-10);
+  border-top: 1px solid var(--accent);
+  border-bottom: 1px solid var(--accent) !important;
+}
+
+.live-row > :first-child {
+  border-left: 1px solid var(--accent);
+  border-radius: var(--r-sm) 0 0 var(--r-sm);
+}
+
+.live-row > :last-child {
+  border-right: 1px solid var(--accent);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+}
+
+/* "Live" pill: selected-chip tint with a gold border. */
 .live-tag {
-  margin-left: 8px;
-  padding: 1px 7px;
-  border-radius: 3px;
-  background: var(--el-amber);
-  color: var(--el-on-amber);
+  margin-left: 6px;
+  padding: 1px 8px;
+  border: 1px solid var(--accent);
+  border-radius: var(--r-pill);
+  background: var(--accent-08);
+  color: var(--accent);
   font-size: 11px;
-  font-weight: 600;
+  line-height: 14px;
 }
 
 .note {
-  max-width: 100ch;
-  font-size: 13px;
-  color: var(--el-muted);
+  max-width: 80ch;
+  margin: 12px 0 0;
+  font-size: 12px;
+  line-height: 17px;
+  color: var(--text-tertiary);
 }
 
 .caveats {
   max-width: 80ch;
-  padding-left: 20px;
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--text-secondary);
 
-  li {
-    margin-bottom: 8px;
+  li + li {
+    margin-top: 8px;
+  }
+
+  strong {
+    color: var(--text-primary);
+    font-weight: 500;
   }
 }
 
 .agreement,
 .definitions {
   display: grid;
-  grid-template-columns: max-content minmax(0, 70ch);
-  gap: 6px 20px;
-  font-size: 14px;
+  grid-template-columns: minmax(200px, max-content) 1fr;
+  gap: 8px 20px;
+  max-width: 90ch;
+  margin: 0;
+  font-size: 13px;
+  line-height: 20px;
 
   dt {
-    font-weight: 600;
+    color: var(--text-primary);
+    font-weight: 500;
   }
 
   dd {
     margin: 0;
+    color: var(--text-secondary);
   }
 }
 
 .agreement dd {
-  font-family: var(--el-mono);
-  color: var(--el-text);
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+p {
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--text-secondary);
 }
 
 @media (max-width: 720px) {
   .agreement,
   .definitions {
     grid-template-columns: minmax(0, 1fr);
+  }
 
-    dd {
-      margin-bottom: 8px;
-    }
+  .title {
+    font-size: 24px;
+    line-height: 30px;
   }
 }

@@ -12,8 +12,22 @@
       {{ summary().documents }} documents from {{ summary().companies }} companies, split into
       {{ summary().chunks | number }} searchable chunks.
     </p>
+
+    <!-- Company search: filters the table as you type (ticker or company name, any case). -->
+    <div class="search-row">
+      <input class="search-input" type="search" placeholder="Search by company or ticker" aria-label="Search companies"
+             aria-controls="corpus-table" [value]="query()" (input)="query.set($any($event.target).value)" />
+      <p class="caption num" role="status">
+        @if (query().trim()) {
+          {{ shown().length }} of {{ docs.length }} documents
+        } @else {
+          {{ docs.length }} documents
+        }
+      </p>
+    </div>
+
     <div class="table-wrap">
-      <table class="corpus-table">
+      <table id="corpus-table" class="corpus-table">
         <caption class="visually-hidden">Documents in the corpus, by company and fiscal quarter</caption>
         <thead>
           <tr>
@@ -21,24 +35,28 @@
             <th scope="col">Fiscal quarter</th>
             <th scope="col">Document</th>
             <th scope="col" class="num">Chunks</th>
-            <th scope="col">Source</th>
+            <th scope="col" class="num">Source</th>
           </tr>
         </thead>
         <tbody>
-          @for (d of docs; track d.id) {
+          @for (d of shown(); track d.id) {
             <tr>
-              <td>{{ d.companyName }} ({{ d.ticker }})</td>
-              <td>{{ period(d) }}</td>
+              <td>{{ d.companyName }} <span class="ticker">({{ d.ticker }})</span></td>
+              <td class="mono">{{ period(d) }}</td>
               <td>{{ docTypeLabels[d.docType] ?? d.docType }}</td>
               <td class="num">{{ d.chunkCount | number }}</td>
-              <td>
+              <td class="num">
                 <a [href]="d.sourceUrl" target="_blank" rel="noopener noreferrer">
-                  Open<span class="visually-hidden"> {{ d.ticker }} {{ period(d) }} {{ docTypeLabels[d.docType] }} (opens in a new tab)</span>
+                  Open ↗<span class="visually-hidden"> {{ d.ticker }} {{ period(d) }} {{ docTypeLabels[d.docType] }} (opens in a new tab)</span>
                 </a>
               </td>
             </tr>
           } @empty {
-            <tr><td colspan="5">No documents have been ingested yet.</td></tr>
+            @if (docs.length === 0) {
+              <tr><td colspan="5" class="empty">No documents have been ingested yet.</td></tr>
+            } @else {
+              <tr><td colspan="5" class="empty">No company matches "{{ query().trim() }}".</td></tr>
+            }
           }
         </tbody>
       </table>

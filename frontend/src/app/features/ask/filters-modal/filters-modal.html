@@ -1,0 +1,80 @@
+<header class="head">
+  <div>
+    <h2 id="filters-title" class="title">Filters</h2>
+    <p class="caption">Narrow the search. No selection in a group means all of it.</p>
+  </div>
+  <button type="button" class="icon-button" aria-label="Close" (click)="cancel()">✕</button>
+</header>
+
+<div class="body">
+  <!-- Each option is a checkbox chip: a button with role="checkbox", so Space and Enter toggle it. -->
+  <section class="group" aria-labelledby="f-companies">
+    <h3 id="f-companies" class="label">
+      Companies@if (companyOptions.length > 0) { ({{ companyOptions.length }} supported)}
+    </h3>
+    @if (data.companiesError) {
+      <p class="caption">Could not load the companies: {{ data.companiesError }}</p>
+    } @else {
+      @if (showCompanySearch) {
+        <input class="search-input" type="search" placeholder="Search by ticker or name" aria-label="Search companies"
+               [value]="companyQuery()" (input)="companyQuery.set($any($event.target).value)" />
+      }
+      <div class="chips grid" role="group" aria-labelledby="f-companies">
+        @for (c of visibleCompanies(); track c.ticker) {
+          <button type="button" class="chip two-line" role="checkbox" [attr.aria-checked]="tickers().includes(c.ticker)"
+                  [class.on]="tickers().includes(c.ticker)" (click)="toggle(tickers, c.ticker)">
+            <span class="box" aria-hidden="true"></span>
+            <span class="chip-text">
+              <span class="chip-main"><span class="ticker">{{ c.ticker }}</span> {{ c.name }}</span>
+              <span class="visually-hidden">, </span><span class="chip-sub num">{{ c.range }}</span>
+            </span>
+          </button>
+        } @empty {
+          <p class="caption">No company matches "{{ companyQuery() }}".</p>
+        }
+      </div>
+    }
+  </section>
+
+  @if (periodOptions().length > 0) {
+    <section class="group" aria-labelledby="f-quarters">
+      <h3 id="f-quarters" class="label">Quarters</h3>
+      <div class="chips grid" role="group" aria-labelledby="f-quarters">
+        @for (p of periodOptions(); track p.key) {
+          <button type="button" class="chip two-line" role="checkbox" [attr.aria-checked]="periods().includes(p.key)"
+                  [class.on]="periods().includes(p.key)" (click)="toggle(periods, p.key)">
+            <span class="box" aria-hidden="true"></span>
+            <span class="chip-text">
+              <span class="chip-main num">{{ p.label }}</span>
+              <span class="visually-hidden">, </span><span class="chip-sub num">{{ p.months }}</span>
+            </span>
+          </button>
+        }
+      </div>
+      @if (fiscalNote) {
+        <p class="info-note">{{ fiscalNote }}</p>
+      }
+    </section>
+  }
+
+  <section class="group" aria-labelledby="f-docs">
+    <h3 id="f-docs" class="label">Document types</h3>
+    <div class="chips" role="group" aria-labelledby="f-docs">
+      @for (d of docTypeOptions; track d.value) {
+        <button type="button" class="chip" role="checkbox" [attr.aria-checked]="docTypes().includes(d.value)"
+                [class.on]="docTypes().includes(d.value)" (click)="toggle(docTypes, d.value)">
+          <span class="box" aria-hidden="true"></span>
+          <span>{{ d.label }}</span>
+        </button>
+      }
+    </div>
+  </section>
+</div>
+
+<footer class="foot">
+  <button type="button" class="text-button" (click)="reset()">Reset all</button>
+  <div class="foot-right">
+    <button type="button" class="outline" (click)="cancel()">Cancel</button>
+    <button type="button" class="primary" (click)="apply()">{{ applyLabel() }}</button>
+  </div>
+</footer>

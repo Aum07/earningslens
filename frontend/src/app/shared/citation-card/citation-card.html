@@ -1,16 +1,15 @@
-<div class="head">
-  <span class="marker">[{{ citation().marker }}]</span>
-  <span class="ticker">{{ citation().ticker }}</span>
-  <span>{{ period() }}</span>
-  <span>{{ docType() }}</span>
-  @if (highlighted()) {
-    <span class="selected-tag">Selected</span>
-  }
+<div class="row">
+  <span class="number cite" aria-hidden="true">{{ citation().marker }}</span>
+  <div class="text">
+    <p class="title">
+      {{ docType() }}
+      @if (highlighted()) {
+        <span class="selected-tag">Selected</span>
+      }
+    </p>
+    <p class="meta">{{ meta() }}</p>
+  </div>
+  <button type="button" class="view" aria-haspopup="dialog" [attr.aria-label]="'View passage of source ' + citation().marker" (click)="viewPassage.emit()">
+    View passage
+  </button>
 </div>
-@if (location()) {
-  <p class="location">{{ location() }}</p>
-}
-<p class="snippet">{{ snippet() }}</p>
-<a class="open" [href]="citation().sourceUrl" target="_blank" rel="noopener noreferrer">
-  Open source<span class="visually-hidden"> (opens in a new tab)</span>
-</a>

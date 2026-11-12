@@ -1,4 +1,4 @@
-import { splitAnswer } from './answer-segments';
+import { sentencesCiting, splitAnswer } from './answer-segments';
 
 describe('splitAnswer', () => {
   const text = (t: string, bold = false) => ({ kind: 'text', text: t, bold });
@@ -46,5 +46,23 @@ describe('splitAnswer', () => {
 
   it('leaves a lone ** as typed', () => {
     expect(splitAnswer('Growth ** was strong.', new Set())).toEqual([text('Growth ** was strong.')]);
+  });
+});
+
+describe('sentencesCiting', () => {
+  const answer =
+    '**FY2026 Q2**\n\nRevenue was $81.3 billion, up 17% [3]. Microsoft Cloud grew [3][12]. Guidance was not given. [7]';
+
+  it('returns the sentences that cite a marker, without markers or asterisks', () => {
+    expect(sentencesCiting(answer, 3)).toEqual(['Revenue was $81.3 billion, up 17%.', 'Microsoft Cloud grew.']);
+    expect(sentencesCiting(answer, 12)).toEqual(['Microsoft Cloud grew.']);
+  });
+
+  it('keeps a marker written after the full stop with its sentence', () => {
+    expect(sentencesCiting(answer, 7)).toEqual(['Guidance was not given.']);
+  });
+
+  it('returns nothing for a marker the answer does not use', () => {
+    expect(sentencesCiting(answer, 99)).toEqual([]);
   });
 });
