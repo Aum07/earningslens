@@ -55,6 +55,22 @@ jobs:
       - name: Build and test
         run: ./mvnw -B verify
 
+      # E7.2: print line coverage per package from the JaCoCo report written during verify.
+      # Report only (no threshold). Columns in jacoco.csv: 2 = package, 8 = lines missed, 9 = lines covered.
+      - name: Line coverage (JaCoCo)
+        if: always()
+        run: |
+          csv=target/site/jacoco/jacoco.csv
+          if [ ! -f "$csv" ]; then echo "No JaCoCo report found"; exit 0; fi
+          printf "%-35s %8s %8s\n" package lines covered
+          awk -F, 'NR > 1 { missed[$2] += $8; covered[$2] += $9 }
+            END {
+              for (p in covered) {
+                total = missed[p] + covered[p]
+                if (total > 0) printf "%-35s %8d %7.1f%%\n", p, total, 100 * covered[p] / total
+              }
+            }' "$csv" | sort
+
   frontend:
     runs-on: ubuntu-latest
 

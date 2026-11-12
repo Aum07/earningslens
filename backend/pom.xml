@@ -34,6 +34,7 @@
         <jtokkit.version>1.1.0</jtokkit.version>
         <bucket4j.version>8.19.0</bucket4j.version>
         <springdoc.version>3.2.0</springdoc.version>
+        <jacoco.version>0.8.16</jacoco.version>
         <!-- The swagger-core version springdoc 3.2.0 is built with (see DECISIONS.md, E4.8). -->
         <swagger-core.version>2.2.55</swagger-core.version>
     </properties>
@@ -189,6 +190,30 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <!-- JaCoCo (roadmap E7.2, approved 2026-11-12, see DECISIONS.md): line coverage of the tests.
+                 prepare-agent attaches the coverage agent to the test JVM (through Surefire's argLine);
+                 report writes target/site/jacoco/ (index.html to browse, jacoco.csv for CI) during verify.
+                 Report only: low coverage never fails the build (Aum's choice). Build-time only. -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
